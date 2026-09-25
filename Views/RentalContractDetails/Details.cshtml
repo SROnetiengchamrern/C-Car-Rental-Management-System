@@ -1,6 +1,11 @@
 @model CarRentalManagementSystem.Models.RentalContractDetail
 @{
     ViewData["Title"] = "Contract Detail";
+    var carTitle = Model.Car != null ? $"{Model.Car.Make} {Model.Car.Model}" : "Car";
+    var detailTotal = Math.Max(0,
+        Model.SubTotal
+        - (Model.RentalContract?.DiscountAmount ?? 0)
+        - (Model.RentalContract?.DepositAmount ?? 0));
 }
 
 <div class="page-header">
@@ -14,33 +19,54 @@
 </div>
 
 <div class="form-panel">
-    <dl class="row mb-0">
-        <dt class="col-sm-2">Contract</dt>
-        <dd class="col-sm-10">@Model.RentalContract?.ContractNumber</dd>
-        <dt class="col-sm-2">Customer</dt>
-        <dd class="col-sm-10">@Model.RentalContract?.Customer?.FullName</dd>
-        <dt class="col-sm-2">Car</dt>
-        <dd class="col-sm-10">@Model.Car?.Make @Model.Car?.Model (@Model.Car?.LicensePlate)</dd>
-        <dt class="col-sm-2">Daily Rate</dt>
-        <dd class="col-sm-10 money">@Model.DailyRate.ToString("C")</dd>
-        <dt class="col-sm-2">Days</dt>
-        <dd class="col-sm-10">@Model.Days</dd>
-        <dt class="col-sm-2">Sub Total</dt>
-        <dd class="col-sm-10 money">@Model.SubTotal.ToString("C")</dd>
-        <dt class="col-sm-2">Discount</dt>
-        <dd class="col-sm-10 money">@((Model.RentalContract?.DiscountAmount ?? 0).ToString("C"))</dd>
-        <dt class="col-sm-2">Deposit Amount</dt>
-        <dd class="col-sm-10 money">@((Model.RentalContract?.DepositAmount ?? 0).ToString("C"))</dd>
-        <dt class="col-sm-2">Total</dt>
-        <dd class="col-sm-10 money">@{
-            var detailTotal = Math.Max(0,
-                Model.SubTotal
-                - (Model.RentalContract?.DiscountAmount ?? 0)
-                - (Model.RentalContract?.DepositAmount ?? 0));
-        }@detailTotal.ToString("C")</dd>
-        <dt class="col-sm-2">Notes</dt>
-        <dd class="col-sm-10">@(Model.Notes ?? "—")</dd>
-    </dl>
+    <div class="row g-4 align-items-start">
+        <div class="col-lg-7">
+            <dl class="row detail-fields mb-0">
+                <dt class="col-sm-4">Contract</dt>
+                <dd class="col-sm-8">@Model.RentalContract?.ContractNumber</dd>
+                <dt class="col-sm-4">Customer</dt>
+                <dd class="col-sm-8">@Model.RentalContract?.Customer?.FullName</dd>
+                <dt class="col-sm-4">Car</dt>
+                <dd class="col-sm-8">@Model.Car?.Make @Model.Car?.Model (@Model.Car?.LicensePlate)</dd>
+                <dt class="col-sm-4">Daily Rate</dt>
+                <dd class="col-sm-8 money">@Model.DailyRate.ToString("C")</dd>
+                <dt class="col-sm-4">Days</dt>
+                <dd class="col-sm-8">@Model.Days</dd>
+                <dt class="col-sm-4">Sub Total</dt>
+                <dd class="col-sm-8 money">@Model.SubTotal.ToString("C")</dd>
+                <dt class="col-sm-4">Discount</dt>
+                <dd class="col-sm-8 money">@((Model.RentalContract?.DiscountAmount ?? 0).ToString("C"))</dd>
+                <dt class="col-sm-4">Deposit Amount</dt>
+                <dd class="col-sm-8 money">@((Model.RentalContract?.DepositAmount ?? 0).ToString("C"))</dd>
+                <dt class="col-sm-4">Total</dt>
+                <dd class="col-sm-8 money">@detailTotal.ToString("C")</dd>
+                <dt class="col-sm-4">Notes</dt>
+                <dd class="col-sm-8">@(Model.Notes ?? "—")</dd>
+            </dl>
+        </div>
+        <div class="col-lg-5">
+            <div class="contract-detail-image">
+                @if (!string.IsNullOrWhiteSpace(Model.Car?.ImageUrl))
+                {
+                    <img src="@Model.Car.ImageUrl" alt="@carTitle" class="contract-detail-photo" />
+                }
+                else
+                {
+                    <div class="contract-detail-photo-empty">
+                        <i class="bi bi-car-front"></i>
+                        <span>No image for this car</span>
+                    </div>
+                }
+                <div class="contract-detail-image-caption">
+                    <strong>@carTitle</strong>
+                    @if (Model.Car != null)
+                    {
+                        <span class="text-muted">@Model.Car.LicensePlate · @Model.Car.Year</span>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <div class="page-actions mt-3">

@@ -1628,3 +1628,56 @@ button.btn i {
     bottom: 0.85rem;
   }
 }
+
+.contract-detail-image {
+  background: #f8fafc;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 0.85rem;
+  height: 100%;
+}
+
+.contract-detail-photo {
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  border-radius: 10px;
+  display: block;
+  background: #e5e7eb;
+}
+
+.contract-detail-photo-empty {
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  border-radius: 10px;
+  background: linear-gradient(145deg, #e2e8f0, #f1f5f9);
+  color: var(--muted);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  font-size: 0.9rem;
+}
+
+.contract-detail-photo-empty i {
+  font-size: 2rem;
+  color: #94a3b8;
+}
+
+.contract-detail-image-caption {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  margin-top: 0.75rem;
+  font-size: 0.92rem;
+}
+
+.admin-content .detail-fields {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  border-radius: 0;
+  padding: 0;
+  margin-bottom: 0;
+}
