@@ -1,0 +1,587 @@
+:root {
+  --ink: #07131f;
+  --navy: #0d2a3f;
+  --teal: #0f9b8e;
+  --teal-deep: #0a7a70;
+  --mist: #e6eef3;
+  --fog: #f3f7fa;
+  --muted: #5a6d7a;
+  --line: rgba(7, 19, 31, 0.1);
+  --white: #ffffff;
+  --danger: #9b2c2c;
+  --ok: #1b6b45;
+  --font-display: 'Syne', sans-serif;
+  --font-body: 'DM Sans', system-ui, sans-serif;
+  --max: 1120px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  color: var(--ink);
+  background:
+    radial-gradient(ellipse 70% 45% at 0% 0%, rgba(15, 155, 142, 0.14), transparent 55%),
+    radial-gradient(ellipse 50% 40% at 100% 10%, rgba(13, 42, 63, 0.08), transparent 50%),
+    linear-gradient(180deg, var(--fog) 0%, var(--mist) 100%);
+  line-height: 1.55;
+  min-height: 100vh;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-display);
+  font-weight: 650;
+  letter-spacing: -0.03em;
+  line-height: 1.12;
+  margin: 0 0 0.4em;
+}
+
+p {
+  margin: 0 0 0.75em;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+.site {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+  flex: 1;
+}
+
+/* Nav */
+.site-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem clamp(1.25rem, 4vw, 2.5rem);
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  backdrop-filter: blur(14px);
+  background: rgba(243, 247, 250, 0.88);
+  border-bottom: 1px solid var(--line);
+}
+
+.brand {
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+}
+
+.brand span {
+  color: var(--teal);
+}
+
+.site-nav nav {
+  display: flex;
+  gap: 1.4rem;
+  font-size: 0.95rem;
+}
+
+.site-nav nav a {
+  color: var(--muted);
+  transition: color 0.2s;
+}
+
+.site-nav nav a:hover,
+.site-nav nav a.active {
+  color: var(--ink);
+}
+
+.nav-cta {
+  padding: 0.55rem 1rem;
+  background: var(--navy);
+  color: var(--white) !important;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: background 0.2s, transform 0.2s;
+}
+
+.nav-cta:hover {
+  background: var(--teal-deep);
+  transform: translateY(-1px);
+}
+
+@media (max-width: 720px) {
+  .site-nav nav {
+    display: none;
+  }
+}
+
+/* Hero — full-bleed */
+.hero {
+  position: relative;
+  min-height: min(92vh, 820px);
+  display: grid;
+  align-items: end;
+  padding: clamp(2.5rem, 7vw, 5rem) clamp(1.25rem, 4vw, 2.5rem);
+  color: var(--white);
+  overflow: hidden;
+}
+
+.hero-media {
+  position: absolute;
+  inset: 0;
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  transform: scale(1.03);
+  animation: hero-drift 20s ease-in-out infinite alternate;
+}
+
+.hero-media::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    165deg,
+    rgba(7, 19, 31, 0.72) 0%,
+    rgba(7, 19, 31, 0.28) 42%,
+    rgba(7, 19, 31, 0.78) 100%
+  );
+}
+
+@keyframes hero-drift {
+  from {
+    transform: scale(1.03) translate3d(0, 0, 0);
+  }
+  to {
+    transform: scale(1.09) translate3d(0, -1.2%, 0);
+  }
+}
+
+.hero-content {
+  position: relative;
+  z-index: 1;
+  max-width: 38rem;
+  animation: rise 0.95s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(22px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.brand-mark {
+  font-family: var(--font-display);
+  font-size: clamp(3rem, 9vw, 5.25rem);
+  font-weight: 700;
+  letter-spacing: -0.045em;
+  margin: 0 0 0.35rem;
+  line-height: 0.95;
+}
+
+.hero h1 {
+  font-size: clamp(1.15rem, 2.6vw, 1.55rem);
+  font-weight: 500;
+  font-family: var(--font-body);
+  letter-spacing: -0.01em;
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 0.65rem;
+}
+
+.hero-lead {
+  color: rgba(255, 255, 255, 0.72);
+  max-width: 28rem;
+  margin-bottom: 1.6rem;
+  font-size: 1.05rem;
+}
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.btn-primary,
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.8rem 1.4rem;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  font-weight: 560;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.2s, background 0.2s, color 0.2s, border-color 0.2s;
+}
+
+.btn-primary {
+  background: var(--teal);
+  color: var(--white);
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: var(--teal-deep);
+  transform: translateY(-1px);
+}
+
+.btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--white);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+.btn-ghost:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.7);
+}
+
+/* Sections */
+.section {
+  width: min(100% - 2.5rem, var(--max));
+  margin: 0 auto;
+  padding: 3.75rem 0;
+}
+
+.section-head {
+  margin-bottom: 2rem;
+  max-width: 34rem;
+}
+
+.section-head h1,
+.section-head h2 {
+  font-size: clamp(1.7rem, 3vw, 2.2rem);
+}
+
+.section-head p,
+.muted {
+  color: var(--muted);
+}
+
+.section-cta {
+  margin-top: 2rem;
+}
+
+/* Cars */
+.car-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1.75rem;
+}
+
+.car-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  animation: rise 0.7s ease both;
+  transition: transform 0.25s ease;
+}
+
+.car-card:hover {
+  transform: translateY(-5px);
+}
+
+.car-card-media {
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  background: var(--navy);
+}
+
+.car-card-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.car-card:hover .car-card-media img {
+  transform: scale(1.05);
+}
+
+.car-card-placeholder {
+  width: 100%;
+  height: 100%;
+  min-height: 160px;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(145deg, var(--navy), var(--teal-deep));
+  color: rgba(255, 255, 255, 0.88);
+  font-family: var(--font-display);
+  padding: 1rem;
+  text-align: center;
+}
+
+.car-card-placeholder.large {
+  min-height: 320px;
+}
+
+.car-card-meta {
+  font-size: 0.78rem;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 0.2rem;
+}
+
+.car-card-body h3 {
+  font-size: 1.2rem;
+  margin-bottom: 0.25rem;
+}
+
+.car-card-body h3 a:hover {
+  color: var(--teal-deep);
+}
+
+.car-card-specs {
+  font-size: 0.88rem;
+  color: var(--muted);
+  margin-bottom: 0.65rem;
+}
+
+.car-card-foot {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.car-card-foot strong {
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  color: var(--navy);
+}
+
+.car-card-foot strong span {
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  font-weight: 400;
+  color: var(--muted);
+}
+
+.text-link {
+  color: var(--teal-deep);
+  font-weight: 560;
+  font-size: 0.9rem;
+}
+
+.text-link:hover {
+  text-decoration: underline;
+}
+
+.back-link {
+  display: inline-block;
+  margin-bottom: 1.5rem;
+}
+
+/* Fleet */
+.fleet-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 2rem;
+}
+
+.fleet-toolbar input,
+.fleet-toolbar select,
+.booking-form input,
+.booking-form textarea {
+  font: inherit;
+  padding: 0.65rem 0.8rem;
+  border: 1px solid var(--line);
+  background: var(--white);
+  color: var(--ink);
+  min-width: 160px;
+}
+
+.fleet-toolbar input {
+  flex: 1;
+  min-width: 200px;
+}
+
+.booking-form textarea {
+  width: 100%;
+  resize: vertical;
+}
+
+/* Detail */
+.detail-layout {
+  display: grid;
+  gap: 2.25rem;
+  grid-template-columns: 1.1fr 1fr;
+}
+
+@media (max-width: 860px) {
+  .detail-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+.detail-media {
+  background: var(--navy);
+  overflow: hidden;
+  min-height: 280px;
+}
+
+.detail-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  min-height: 340px;
+}
+
+.detail-info h1 span {
+  font-weight: 500;
+  color: var(--muted);
+  font-size: 0.75em;
+}
+
+.detail-rate {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  color: var(--teal-deep);
+  margin: 0.4rem 0 1rem;
+}
+
+.detail-rate span {
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.detail-specs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.45rem 1rem;
+  list-style: none;
+  padding: 0;
+  margin: 0 0 2rem;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.booking-form {
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--line);
+}
+
+.booking-form h2 {
+  font-size: 1.3rem;
+  margin-bottom: 1rem;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 0.85rem;
+  margin-bottom: 0.15rem;
+}
+
+.booking-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin-bottom: 0.85rem;
+}
+
+.error-banner {
+  background: #fdecea;
+  color: var(--danger);
+  padding: 0.75rem 1rem;
+  margin: 0.75rem 0;
+  font-size: 0.9rem;
+}
+
+.success-banner {
+  background: #e6f6ee;
+  color: var(--ok);
+  padding: 0.75rem 1rem;
+  margin: 0.75rem 0;
+  font-size: 0.9rem;
+}
+
+/* Contact */
+.contact-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1.25rem;
+}
+
+.contact-card {
+  padding: 1.25rem 0;
+  border-top: 1px solid var(--line);
+}
+
+.contact-card h2,
+.contact-card h3 {
+  font-size: 1.15rem;
+}
+
+.contact-card p {
+  color: var(--muted);
+  margin: 0.2rem 0;
+  font-size: 0.95rem;
+}
+
+/* Footer */
+.site-footer {
+  margin-top: auto;
+  padding: 2.5rem clamp(1.25rem, 4vw, 2.5rem);
+  border-top: 1px solid var(--line);
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 1fr;
+  gap: 1.5rem;
+  color: var(--muted);
+  font-size: 0.92rem;
+  background: rgba(255, 255, 255, 0.35);
+}
+
+.site-footer .brand {
+  display: inline-block;
+  margin-bottom: 0.4rem;
+  color: var(--ink);
+}
+
+.site-footer h4 {
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--ink);
+  margin-bottom: 0.5rem;
+}
+
+@media (max-width: 720px) {
+  .site-footer {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,2 +1,11 @@
 admin@carrental.local
 Admin@123
+
+
+dotnet restore
+dotnet run --urls http://localhost:5263
+
+cd customer-web
+npm install
+npm run dev
+
