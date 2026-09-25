@@ -1,0 +1,83 @@
+@model IEnumerable<CarRentalManagementSystem.Models.Setting>
+@{
+    ViewData["Title"] = "Settings";
+    var groups = ViewBag.Groups as List<string> ?? new List<string>();
+    var currentGroup = ViewBag.CurrentGroup as string;
+}
+
+<div class="page-header">
+    <div>
+        <h1>Settings</h1>
+        <p class="page-subtitle">System configuration values</p>
+    </div>
+    <div class="page-actions">
+        @if (User.IsInRole("Admin"))
+        {
+            <a class="btn btn-primary" asp-action="Create"><i class="bi bi-plus-lg"></i> Add Setting</a>
+        }
+    </div>
+</div>
+
+@if (TempData["Success"] is string success)
+{
+    <div class="alert alert-success">@success</div>
+}
+
+<div class="page-actions mb-3">
+    <a class="btn btn-sm @(string.IsNullOrEmpty(currentGroup) ? "btn-primary" : "btn-outline-secondary")" asp-action="Index">All</a>
+    @foreach (var group in groups)
+    {
+        <a class="btn btn-sm @(currentGroup == group ? "btn-primary" : "btn-outline-secondary")"
+           asp-action="Index" asp-route-group="@group">@group</a>
+    }
+</div>
+
+<div class="table-panel">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0 datatable w-100">
+            <thead>
+                <tr>
+                    <th>Group</th>
+                    <th>Key</th>
+                    <th>Value</th>
+                    <th>Description</th>
+                    <th>Status</th>
+                    <th>Updated</th>
+                    <th class="text-end">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td><span class="status-badge status-scheduled">@item.GroupName</span></td>
+                    <td><strong>@item.SettingKey</strong></td>
+                    <td>@item.SettingValue</td>
+                    <td>@(item.Description ?? "—")</td>
+                    <td>
+                        @if (item.IsActive)
+                        {
+                            <span class="status-badge status-available">Active</span>
+                        }
+                        else
+                        {
+                            <span class="status-badge status-cancelled">Inactive</span>
+                        }
+                    </td>
+                    <td>@item.UpdatedAt.ToString("dd MMM yyyy HH:mm")</td>
+                    <td>
+                        <div class="table-actions">
+                            <a class="btn btn-sm btn-outline-secondary" asp-action="Details" asp-route-id="@item.SettingId"><i class="bi bi-eye"></i> Details</a>
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <a class="btn btn-sm btn-outline-primary" asp-action="Edit" asp-route-id="@item.SettingId"><i class="bi bi-pencil-square"></i> Edit</a>
+                                <a class="btn btn-sm btn-outline-danger" asp-action="Delete" asp-route-id="@item.SettingId"><i class="bi bi-trash"></i> Delete</a>
+                            }
+                        </div>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+</div>

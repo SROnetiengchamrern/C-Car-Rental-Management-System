@@ -1,67 +1,52 @@
 @model IEnumerable<CarRentalManagementSystem.Models.CarStatusHistory>
-
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Car Status History";
 }
 
-<h1>Index</h1>
+<div class="page-header">
+    <div>
+        <h1>Car Status History</h1>
+        <p class="page-subtitle">Track status changes across the fleet</p>
+    </div>
+    <div class="page-actions">
+        <a class="btn btn-primary" asp-action="Create"><i class="bi bi-plus-lg"></i> Add Entry</a>
+    </div>
+</div>
 
-<p class="page-actions"><a class="btn btn-primary" asp-action="Create">Create New</a></p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.PreviousStatus)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.NewStatus)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ChangedAt)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Reason)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Notes)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Car)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ChangedByEmployee)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.PreviousStatus)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.NewStatus)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ChangedAt)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Reason)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Notes)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Car.LicensePlate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ChangedByEmployee.Email)
-            </td>
-            <td>
-                <div class="table-actions"><a class="btn btn-sm btn-outline-primary" asp-action="Edit" asp-route-id="@item.HistoryId">Edit</a><a class="btn btn-sm btn-outline-secondary" asp-action="Details" asp-route-id="@item.HistoryId">Details</a><a class="btn btn-sm btn-outline-danger" asp-action="Delete" asp-route-id="@item.HistoryId">Delete</a></div>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+<div class="table-panel">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0 datatable w-100">
+            <thead>
+                <tr>
+                    <th>When</th>
+                    <th>Car</th>
+                    <th>From</th>
+                    <th>To</th>
+                    <th>Reason</th>
+                    <th>Changed By</th>
+                    <th class="text-end">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.ChangedAt.ToString("dd MMM yyyy HH:mm")</td>
+                    <td><strong>@item.Car?.Make @item.Car?.Model</strong></td>
+                    <td><span class="status-badge status-scheduled">@item.PreviousStatus</span></td>
+                    <td><span class="status-badge status-active">@item.NewStatus</span></td>
+                    <td>@item.Reason</td>
+                    <td>@item.ChangedByEmployee?.FullName</td>
+                    <td>
+                        <div class="table-actions">
+                            <a class="btn btn-sm btn-outline-primary" asp-action="Edit" asp-route-id="@item.HistoryId"><i class="bi bi-pencil-square"></i> Edit</a>
+                            <a class="btn btn-sm btn-outline-secondary" asp-action="Details" asp-route-id="@item.HistoryId"><i class="bi bi-eye"></i> Details</a>
+                            <a class="btn btn-sm btn-outline-danger" asp-action="Delete" asp-route-id="@item.HistoryId"><i class="bi bi-trash"></i> Delete</a>
+                        </div>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+</div>

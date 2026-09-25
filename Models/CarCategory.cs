@@ -20,6 +20,7 @@ public class CarCategory
     [Column(TypeName = "decimal(18,2)")]
     public decimal BaseDailyRate { get; set; }
 
+    [Display(Name = "Active")]
     public bool IsActive { get; set; } = true;
 
     public ICollection<Car> Cars { get; set; } = new List<Car>();

@@ -1,9 +1,10 @@
 using CarRentalManagementSystem.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace CarRentalManagementSystem.Data;
 
-public class ApplicationDbContext : DbContext
+public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 {
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
         : base(options)
@@ -22,6 +23,7 @@ public class ApplicationDbContext : DbContext
     public DbSet<ReturnInspection> ReturnInspections => Set<ReturnInspection>();
     public DbSet<CarMaintenance> CarMaintenances => Set<CarMaintenance>();
     public DbSet<CarStatusHistory> CarStatusHistories => Set<CarStatusHistory>();
+    public DbSet<Setting> Settings => Set<Setting>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -39,6 +41,11 @@ public class ApplicationDbContext : DbContext
         modelBuilder.Entity<ReturnInspection>().ToTable("ReturnInspections");
         modelBuilder.Entity<CarMaintenance>().ToTable("CarMaintenance");
         modelBuilder.Entity<CarStatusHistory>().ToTable("CarStatusHistory");
+        modelBuilder.Entity<Setting>().ToTable("Settings");
+
+        modelBuilder.Entity<Setting>()
+            .HasIndex(s => s.SettingKey)
+            .IsUnique();
 
         modelBuilder.Entity<Car>()
             .HasIndex(c => c.LicensePlate)
@@ -175,163 +182,23 @@ public class ApplicationDbContext : DbContext
 
     private static void SeedData(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<Branch>().HasData(
-            new Branch
-            {
-                BranchId = 1,
-                BranchName = "Phnom Penh Central",
-                Address = "123 Norodom Blvd",
-                City = "Phnom Penh",
-                Phone = "023-111-222",
-                Email = "pp@carrental.local",
-                ManagerName = "Sokha Meas",
-                IsActive = true
-            },
-            new Branch
-            {
-                BranchId = 2,
-                BranchName = "Siem Reap Airport",
-                Address = "Airport Road",
-                City = "Siem Reap",
-                Phone = "063-333-444",
-                Email = "sr@carrental.local",
-                ManagerName = "Vannak Chhim",
-                IsActive = true
-            });
-
         modelBuilder.Entity<CarCategory>().HasData(
-            new CarCategory { CategoryId = 1, CategoryName = "Economy", Description = "Affordable compact cars", BaseDailyRate = 25m, IsActive = true },
+            new CarCategory { CategoryId = 1, CategoryName = "Economy", Description = "Affordable compact cars for city driving", BaseDailyRate = 25m, IsActive = true },
             new CarCategory { CategoryId = 2, CategoryName = "SUV", Description = "Family and adventure SUVs", BaseDailyRate = 55m, IsActive = true },
-            new CarCategory { CategoryId = 3, CategoryName = "Luxury", Description = "Premium vehicles", BaseDailyRate = 120m, IsActive = true });
+            new CarCategory { CategoryId = 3, CategoryName = "Luxury", Description = "Premium vehicles with high comfort", BaseDailyRate = 120m, IsActive = true },
+            new CarCategory { CategoryId = 4, CategoryName = "Compact", Description = "Small cars ideal for parking and short trips", BaseDailyRate = 22m, IsActive = true },
+            new CarCategory { CategoryId = 5, CategoryName = "Sedan", Description = "Comfortable mid-size sedans", BaseDailyRate = 35m, IsActive = true },
+            new CarCategory { CategoryId = 6, CategoryName = "Hatchback", Description = "Practical hatchbacks for daily use", BaseDailyRate = 28m, IsActive = true },
+            new CarCategory { CategoryId = 7, CategoryName = "Convertible", Description = "Open-top cars for leisure driving", BaseDailyRate = 95m, IsActive = true },
+            new CarCategory { CategoryId = 8, CategoryName = "Pickup", Description = "Utility pickup trucks for cargo and travel", BaseDailyRate = 50m, IsActive = true },
+            new CarCategory { CategoryId = 9, CategoryName = "Van", Description = "Passenger vans for groups and tours", BaseDailyRate = 70m, IsActive = true },
+            new CarCategory { CategoryId = 10, CategoryName = "Minivan", Description = "Family minivans with extra space", BaseDailyRate = 60m, IsActive = true },
+            new CarCategory { CategoryId = 11, CategoryName = "Electric", Description = "Eco-friendly electric vehicles", BaseDailyRate = 65m, IsActive = true },
+            new CarCategory { CategoryId = 12, CategoryName = "Hybrid", Description = "Fuel-efficient hybrid cars", BaseDailyRate = 45m, IsActive = true },
+            new CarCategory { CategoryId = 13, CategoryName = "Sports", Description = "High-performance sports cars", BaseDailyRate = 150m, IsActive = true },
+            new CarCategory { CategoryId = 14, CategoryName = "Premium SUV", Description = "Luxury SUVs with advanced features", BaseDailyRate = 110m, IsActive = true },
+            new CarCategory { CategoryId = 15, CategoryName = "Business", Description = "Executive cars for business travel", BaseDailyRate = 85m, IsActive = true });
 
-        modelBuilder.Entity<Employee>().HasData(
-            new Employee
-            {
-                EmployeeId = 1,
-                BranchId = 1,
-                FirstName = "Dara",
-                LastName = "Kim",
-                Email = "dara.kim@carrental.local",
-                Phone = "012-345-678",
-                Position = "Manager",
-                HireDate = new DateTime(2023, 1, 15),
-                Salary = 800m,
-                IsActive = true
-            },
-            new Employee
-            {
-                EmployeeId = 2,
-                BranchId = 1,
-                FirstName = "Srey",
-                LastName = "Nin",
-                Email = "srey.nin@carrental.local",
-                Phone = "012-987-654",
-                Position = "Staff",
-                HireDate = new DateTime(2024, 3, 1),
-                Salary = 450m,
-                IsActive = true
-            },
-            new Employee
-            {
-                EmployeeId = 3,
-                BranchId = 2,
-                FirstName = "Rith",
-                LastName = "Pov",
-                Email = "rith.pov@carrental.local",
-                Phone = "015-222-333",
-                Position = "Staff",
-                HireDate = new DateTime(2024, 6, 10),
-                Salary = 450m,
-                IsActive = true
-            });
-
-        modelBuilder.Entity<Customer>().HasData(
-            new Customer
-            {
-                CustomerId = 1,
-                FirstName = "John",
-                LastName = "Smith",
-                Email = "john.smith@email.com",
-                Phone = "010-111-222",
-                Address = "45 Street 51",
-                City = "Phnom Penh",
-                LicenseNumber = "DL-001234",
-                LicenseExpiry = new DateTime(2028, 5, 20),
-                DateOfBirth = new DateTime(1990, 4, 12),
-                CreatedAt = new DateTime(2025, 1, 10)
-            },
-            new Customer
-            {
-                CustomerId = 2,
-                FirstName = "Lisa",
-                LastName = "Chan",
-                Email = "lisa.chan@email.com",
-                Phone = "010-333-444",
-                Address = "88 Pub Street",
-                City = "Siem Reap",
-                LicenseNumber = "DL-005678",
-                LicenseExpiry = new DateTime(2027, 11, 8),
-                DateOfBirth = new DateTime(1995, 8, 3),
-                CreatedAt = new DateTime(2025, 2, 5)
-            });
-
-        modelBuilder.Entity<Car>().HasData(
-            new Car
-            {
-                CarId = 1,
-                CategoryId = 1,
-                BranchId = 1,
-                Make = "Toyota",
-                Model = "Vios",
-                Year = 2023,
-                Color = "White",
-                LicensePlate = "PP-1234",
-                VIN = "TOYVIO2023001",
-                DailyRate = 28m,
-                Status = "Available",
-                Mileage = 15200,
-                Seats = 5,
-                Transmission = "Automatic",
-                FuelType = "Gasoline",
-                CreatedAt = new DateTime(2025, 1, 1)
-            },
-            new Car
-            {
-                CarId = 2,
-                CategoryId = 2,
-                BranchId = 1,
-                Make = "Honda",
-                Model = "CR-V",
-                Year = 2024,
-                Color = "Black",
-                LicensePlate = "PP-5678",
-                VIN = "HONCRV2024001",
-                DailyRate = 60m,
-                Status = "Available",
-                Mileage = 8200,
-                Seats = 5,
-                Transmission = "Automatic",
-                FuelType = "Gasoline",
-                CreatedAt = new DateTime(2025, 1, 1)
-            },
-            new Car
-            {
-                CarId = 3,
-                CategoryId = 3,
-                BranchId = 2,
-                Make = "BMW",
-                Model = "520i",
-                Year = 2024,
-                Color = "Silver",
-                LicensePlate = "SR-9012",
-                VIN = "BMW5202024001",
-                DailyRate = 130m,
-                Status = "Available",
-                Mileage = 4100,
-                Seats = 5,
-                Transmission = "Automatic",
-                FuelType = "Gasoline",
-                CreatedAt = new DateTime(2025, 1, 1)
-            });
+        DemoSeedData.Apply(modelBuilder);
     }
 }

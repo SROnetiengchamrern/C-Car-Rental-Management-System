@@ -1,121 +1,69 @@
 @model IEnumerable<CarRentalManagementSystem.Models.Car>
-
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Cars";
 }
 
-<h1>Index</h1>
+<div class="page-header">
+    <div>
+        <h1>Cars</h1>
+        <p class="page-subtitle">Fleet inventory and availability</p>
+    </div>
+    <div class="page-actions">
+        <a class="btn btn-primary" asp-action="Create"><i class="bi bi-plus-lg"></i> Add Car</a>
+    </div>
+</div>
 
-<p class="page-actions"><a class="btn btn-primary" asp-action="Create">Create New</a></p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Make)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Model)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Year)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Color)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.LicensePlate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.VIN)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DailyRate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Status)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Mileage)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Seats)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Transmission)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.FuelType)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ImageUrl)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CreatedAt)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Category)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Branch)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Make)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Model)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Year)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Color)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.LicensePlate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.VIN)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DailyRate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Status)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Mileage)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Seats)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Transmission)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.FuelType)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ImageUrl)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CreatedAt)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Category.CategoryName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Branch.Address)
-            </td>
-            <td>
-                <div class="table-actions"><a class="btn btn-sm btn-outline-primary" asp-action="Edit" asp-route-id="@item.CarId">Edit</a><a class="btn btn-sm btn-outline-secondary" asp-action="Details" asp-route-id="@item.CarId">Details</a><a class="btn btn-sm btn-outline-danger" asp-action="Delete" asp-route-id="@item.CarId">Delete</a></div>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+<div class="table-panel">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0 datatable w-100">
+            <thead>
+                <tr>
+                    <th>Image</th>
+                    <th>Vehicle</th>
+                    <th>Plate</th>
+                    <th>Category</th>
+                    <th>Branch</th>
+                    <th>Daily Rate</th>
+                    <th>Status</th>
+                    <th>Mileage</th>
+                    <th class="text-end">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach (var item in Model)
+            {
+                var statusClass = "status-" + (item.Status ?? "").Replace(" ", "").ToLowerInvariant();
+                <tr>
+                    <td>
+                        @if (!string.IsNullOrWhiteSpace(item.ImageUrl))
+                        {
+                            <img src="@item.ImageUrl" alt="@item.Make @item.Model" class="car-thumb" />
+                        }
+                        else
+                        {
+                            <div class="car-thumb car-thumb-empty"><i class="bi bi-car-front"></i></div>
+                        }
+                    </td>
+                    <td>
+                        <strong>@item.Make @item.Model</strong>
+                        <div class="text-muted small">@item.Year · @item.Color · @item.Transmission</div>
+                    </td>
+                    <td><strong>@item.LicensePlate</strong></td>
+                    <td>@item.Category?.CategoryName</td>
+                    <td>@item.Branch?.BranchName</td>
+                    <td class="money">@item.DailyRate.ToString("C")</td>
+                    <td><span class="status-badge @statusClass">@item.Status</span></td>
+                    <td>@item.Mileage.ToString("N0")</td>
+                    <td>
+                        <div class="table-actions">
+                            <a class="btn btn-sm btn-outline-primary" asp-action="Edit" asp-route-id="@item.CarId"><i class="bi bi-pencil-square"></i> Edit</a>
+                            <a class="btn btn-sm btn-outline-secondary" asp-action="Details" asp-route-id="@item.CarId"><i class="bi bi-eye"></i> Details</a>
+                            <a class="btn btn-sm btn-outline-danger" asp-action="Delete" asp-route-id="@item.CarId"><i class="bi bi-trash"></i> Delete</a>
+                        </div>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -1,0 +1,31 @@
+@model CarRentalManagementSystem.Models.Setting
+@{
+    ViewData["Title"] = "Delete Setting";
+}
+
+<div class="page-header">
+    <div>
+        <h1>Delete Setting</h1>
+        <p class="page-subtitle">Are you sure you want to delete this setting?</p>
+    </div>
+    <div class="page-actions">
+        <a class="btn btn-outline-secondary" asp-action="Index"><i class="bi bi-arrow-left"></i> Back to List</a>
+    </div>
+</div>
+
+<dl class="row">
+    <dt class="col-sm-3">Group</dt>
+    <dd class="col-sm-9">@Model.GroupName</dd>
+    <dt class="col-sm-3">Key</dt>
+    <dd class="col-sm-9">@Model.SettingKey</dd>
+    <dt class="col-sm-3">Value</dt>
+    <dd class="col-sm-9">@Model.SettingValue</dd>
+</dl>
+
+<form asp-action="Delete">
+    <input type="hidden" asp-for="SettingId" />
+    <div class="page-actions">
+        <button type="submit" class="btn btn-danger"><i class="bi bi-trash"></i> Delete</button>
+        <a class="btn btn-outline-secondary" asp-action="Index">Cancel</a>
+    </div>
+</form>

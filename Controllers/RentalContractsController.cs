@@ -50,7 +50,7 @@ namespace CarRentalManagementSystem.Controllers
         // GET: RentalContracts/Create
         public IActionResult Create()
         {
-            ViewData["BranchId"] = new SelectList(_context.Branches, "BranchId", "Address");
+            ViewData["BranchId"] = new SelectList(_context.Branches, "BranchId", "BranchName");
             ViewData["CustomerId"] = new SelectList(_context.Customers, "CustomerId", "Email");
             ViewData["EmployeeId"] = new SelectList(_context.Employees, "EmployeeId", "Email");
             return View();
@@ -69,7 +69,7 @@ namespace CarRentalManagementSystem.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["BranchId"] = new SelectList(_context.Branches, "BranchId", "Address", rentalContract.BranchId);
+            ViewData["BranchId"] = new SelectList(_context.Branches, "BranchId", "BranchName", rentalContract.BranchId);
             ViewData["CustomerId"] = new SelectList(_context.Customers, "CustomerId", "Email", rentalContract.CustomerId);
             ViewData["EmployeeId"] = new SelectList(_context.Employees, "EmployeeId", "Email", rentalContract.EmployeeId);
             return View(rentalContract);
@@ -88,7 +88,7 @@ namespace CarRentalManagementSystem.Controllers
             {
                 return NotFound();
             }
-            ViewData["BranchId"] = new SelectList(_context.Branches, "BranchId", "Address", rentalContract.BranchId);
+            ViewData["BranchId"] = new SelectList(_context.Branches, "BranchId", "BranchName", rentalContract.BranchId);
             ViewData["CustomerId"] = new SelectList(_context.Customers, "CustomerId", "Email", rentalContract.CustomerId);
             ViewData["EmployeeId"] = new SelectList(_context.Employees, "EmployeeId", "Email", rentalContract.EmployeeId);
             return View(rentalContract);
@@ -126,7 +126,7 @@ namespace CarRentalManagementSystem.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["BranchId"] = new SelectList(_context.Branches, "BranchId", "Address", rentalContract.BranchId);
+            ViewData["BranchId"] = new SelectList(_context.Branches, "BranchId", "BranchName", rentalContract.BranchId);
             ViewData["CustomerId"] = new SelectList(_context.Customers, "CustomerId", "Email", rentalContract.CustomerId);
             ViewData["EmployeeId"] = new SelectList(_context.Employees, "EmployeeId", "Email", rentalContract.EmployeeId);
             return View(rentalContract);

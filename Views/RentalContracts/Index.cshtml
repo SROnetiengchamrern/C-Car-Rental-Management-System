@@ -1,91 +1,53 @@
 @model IEnumerable<CarRentalManagementSystem.Models.RentalContract>
-
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Rental Contracts";
 }
 
-<h1>Index</h1>
+<div class="page-header">
+    <div>
+        <h1>Rental Contracts</h1>
+        <p class="page-subtitle">Active and completed rental agreements</p>
+    </div>
+    <div class="page-actions">
+        <a class="btn btn-primary" asp-action="Create"><i class="bi bi-plus-lg"></i> New Contract</a>
+    </div>
+</div>
 
-<p class="page-actions"><a class="btn btn-primary" asp-action="Create">Create New</a></p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.ContractNumber)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.StartDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.EndDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Status)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.TotalAmount)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DepositAmount)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Notes)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CreatedAt)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Customer)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Employee)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Branch)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.ContractNumber)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.StartDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.EndDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Status)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.TotalAmount)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DepositAmount)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Notes)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CreatedAt)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Customer.Email)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Employee.Email)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Branch.Address)
-            </td>
-            <td>
-                <div class="table-actions"><a class="btn btn-sm btn-outline-primary" asp-action="Edit" asp-route-id="@item.ContractId">Edit</a><a class="btn btn-sm btn-outline-secondary" asp-action="Details" asp-route-id="@item.ContractId">Details</a><a class="btn btn-sm btn-outline-danger" asp-action="Delete" asp-route-id="@item.ContractId">Delete</a></div>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+<div class="table-panel">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0 datatable w-100">
+            <thead>
+                <tr>
+                    <th>Contract #</th>
+                    <th>Customer</th>
+                    <th>Branch</th>
+                    <th>Period</th>
+                    <th>Total</th>
+                    <th>Status</th>
+                    <th class="text-end">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach (var item in Model)
+            {
+                var statusClass = "status-" + (item.Status ?? "").Replace(" ", "").ToLowerInvariant();
+                <tr>
+                    <td><strong>@item.ContractNumber</strong></td>
+                    <td>@item.Customer?.FullName</td>
+                    <td>@item.Branch?.BranchName</td>
+                    <td>@item.StartDate.ToString("dd MMM yyyy") – @item.EndDate.ToString("dd MMM yyyy")</td>
+                    <td class="money">@item.TotalAmount.ToString("C")</td>
+                    <td><span class="status-badge @statusClass">@item.Status</span></td>
+                    <td>
+                        <div class="table-actions">
+                            <a class="btn btn-sm btn-outline-primary" asp-action="Edit" asp-route-id="@item.ContractId"><i class="bi bi-pencil-square"></i> Edit</a>
+                            <a class="btn btn-sm btn-outline-secondary" asp-action="Details" asp-route-id="@item.ContractId"><i class="bi bi-eye"></i> Details</a>
+                            <a class="btn btn-sm btn-outline-danger" asp-action="Delete" asp-route-id="@item.ContractId"><i class="bi bi-trash"></i> Delete</a>
+                        </div>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+</div>

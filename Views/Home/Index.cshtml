@@ -76,19 +76,19 @@
             <h5>Revenue</h5>
             <p class="display-6 fw-semibold text-success mb-1">@Model.TotalPayments.ToString("C")</p>
             <p class="text-muted mb-0">Completed payments</p>
-            <a asp-controller="Payments" asp-action="Index" class="btn btn-sm btn-outline-success mt-3">Payments</a>
+            <a asp-controller="Payments" asp-action="Index" class="btn btn-sm btn-outline-secondary mt-3"><i class="bi bi-credit-card"></i> Payments</a>
         </div>
     </div>
     <div class="col-md-8">
         <div class="quick-panel">
             <h5 class="mb-3">Quick actions</h5>
             <div class="d-flex flex-wrap gap-2">
-                <a class="btn btn-primary" asp-controller="RentalContracts" asp-action="Create">New contract</a>
-                <a class="btn btn-outline-primary" asp-controller="Cars" asp-action="Create">Add car</a>
-                <a class="btn btn-outline-primary" asp-controller="Customers" asp-action="Create">Add customer</a>
-                <a class="btn btn-outline-primary" asp-controller="CarReturns" asp-action="Create">Process return</a>
-                <a class="btn btn-outline-secondary" asp-controller="CarStatusHistories" asp-action="Index">Status history</a>
-                <a class="btn btn-outline-secondary" asp-controller="ReturnInspections" asp-action="Index">Inspections</a>
+                <a class="btn btn-primary" asp-controller="RentalContracts" asp-action="Create"><i class="bi bi-plus-lg"></i> New contract</a>
+                <a class="btn btn-outline-primary" asp-controller="Cars" asp-action="Create"><i class="bi bi-car-front"></i> Add car</a>
+                <a class="btn btn-outline-primary" asp-controller="Customers" asp-action="Create"><i class="bi bi-person-plus"></i> Add customer</a>
+                <a class="btn btn-outline-primary" asp-controller="CarReturns" asp-action="Create"><i class="bi bi-arrow-return-left"></i> Process return</a>
+                <a class="btn btn-outline-secondary" asp-controller="CarStatusHistories" asp-action="Index"><i class="bi bi-clock-history"></i> Status history</a>
+                <a class="btn btn-outline-secondary" asp-controller="ReturnInspections" asp-action="Index"><i class="bi bi-clipboard-check"></i> Inspections</a>
             </div>
         </div>
     </div>

@@ -22,3 +22,6 @@ logs/
 .idea/
 .vscode/*
 !.vscode/extensions.json
+
+wwwroot/uploads/**
+!wwwroot/uploads/cars/.gitkeep

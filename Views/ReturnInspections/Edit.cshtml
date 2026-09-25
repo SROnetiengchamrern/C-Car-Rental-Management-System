@@ -4,12 +4,9 @@
     ViewData["Title"] = "Edit";
 }
 
-<h1>Edit</h1>
-
-<h4>ReturnInspection</h4>
-<hr />
+<div class="page-header"><div><h1>Edit</h1><p class="page-subtitle">ReturnInspection</p></div><div class="page-actions"><a class="btn btn-outline-secondary" asp-action="Index"><i class="bi bi-arrow-left"></i> Back to List</a></div></div>
 <div class="row">
-    <div class="col-lg-8 col-xl-7">
+    <div class="col-12">
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="InspectionId" />
@@ -38,13 +35,14 @@
                 <input asp-for="InteriorCondition" class="form-control" />
                 <span asp-validation-for="InteriorCondition" class="text-danger"></span>
             </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="HasDamage" /> @Html.DisplayNameFor(model => model.HasDamage)
+            <div class="form-group form-check form-switch">
+                <input class="form-check-input" asp-for="HasDamage" />
+                <label class="form-check-label" asp-for="HasDamage">
+                    Has Damage
+                    <span class="check-hint">Mark if damage was found during inspection</span>
                 </label>
             </div>
-            <div class="form-group">
-                <label asp-for="DamageDescription" class="control-label"></label>
+            <div class="form-group form-group-full"><label asp-for="DamageDescription" class="control-label"></label>
                 <input asp-for="DamageDescription" class="form-control" />
                 <span asp-validation-for="DamageDescription" class="text-danger"></span>
             </div>
@@ -53,19 +51,16 @@
                 <input asp-for="EstimatedRepairCost" class="form-control" />
                 <span asp-validation-for="EstimatedRepairCost" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Notes" class="control-label"></label>
+            <div class="form-group form-group-full"><label asp-for="Notes" class="control-label"></label>
                 <input asp-for="Notes" class="form-control" />
                 <span asp-validation-for="Notes" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary px-4" />
+                <button type="submit" class="btn btn-primary"><i class="bi bi-check-lg"></i> Save</button>
             </div>
         </form>
     </div>
 </div>
-
-<div class="page-actions"><a class="btn btn-outline-secondary" asp-action="Index">Back to List</a></div>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

@@ -1,61 +1,50 @@
 @model IEnumerable<CarRentalManagementSystem.Models.RentalContractDetail>
-
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Contract Details";
 }
 
-<h1>Index</h1>
+<div class="page-header">
+    <div>
+        <h1>Contract Details</h1>
+        <p class="page-subtitle">Cars linked to each rental contract</p>
+    </div>
+    <div class="page-actions">
+        <a class="btn btn-primary" asp-action="Create"><i class="bi bi-plus-lg"></i> Add Detail</a>
+    </div>
+</div>
 
-<p class="page-actions"><a class="btn btn-primary" asp-action="Create">Create New</a></p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.DailyRate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Days)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.SubTotal)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Notes)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.RentalContract)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Car)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.DailyRate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Days)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.SubTotal)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Notes)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.RentalContract.ContractNumber)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Car.LicensePlate)
-            </td>
-            <td>
-                <div class="table-actions"><a class="btn btn-sm btn-outline-primary" asp-action="Edit" asp-route-id="@item.DetailId">Edit</a><a class="btn btn-sm btn-outline-secondary" asp-action="Details" asp-route-id="@item.DetailId">Details</a><a class="btn btn-sm btn-outline-danger" asp-action="Delete" asp-route-id="@item.DetailId">Delete</a></div>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+<div class="table-panel">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0 datatable w-100">
+            <thead>
+                <tr>
+                    <th>Contract</th>
+                    <th>Car</th>
+                    <th>Daily Rate</th>
+                    <th>Days</th>
+                    <th>Subtotal</th>
+                    <th class="text-end">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td><strong>@item.RentalContract?.ContractNumber</strong></td>
+                    <td>@item.Car?.Make @item.Car?.Model (@item.Car?.LicensePlate)</td>
+                    <td class="money">@item.DailyRate.ToString("C")</td>
+                    <td>@item.Days</td>
+                    <td class="money">@item.SubTotal.ToString("C")</td>
+                    <td>
+                        <div class="table-actions">
+                            <a class="btn btn-sm btn-outline-primary" asp-action="Edit" asp-route-id="@item.DetailId"><i class="bi bi-pencil-square"></i> Edit</a>
+                            <a class="btn btn-sm btn-outline-secondary" asp-action="Details" asp-route-id="@item.DetailId"><i class="bi bi-eye"></i> Details</a>
+                            <a class="btn btn-sm btn-outline-danger" asp-action="Delete" asp-route-id="@item.DetailId"><i class="bi bi-trash"></i> Delete</a>
+                        </div>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -1,15 +1,14 @@
 @model CarRentalManagementSystem.Models.Customer
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Edit Customer";
 }
 
-<h1>Edit</h1>
-
-<h4>Customer</h4>
-<hr />
+<div class="page-header"><div><h1>Edit Customer</h1><p class="page-subtitle">Update customer profile</p></div>
+    <div class="page-actions"><a class="btn btn-outline-secondary" asp-action="Index"><i class="bi bi-arrow-left"></i> Back to List</a></div>
+</div>
 <div class="row">
-    <div class="col-lg-8 col-xl-7">
+    <div class="col-12">
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="CustomerId" />
@@ -33,8 +32,7 @@
                 <input asp-for="Phone" class="form-control" />
                 <span asp-validation-for="Phone" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Address" class="control-label"></label>
+            <div class="form-group form-group-full"><label asp-for="Address" class="control-label"></label>
                 <input asp-for="Address" class="form-control" />
                 <span asp-validation-for="Address" class="text-danger"></span>
             </div>
@@ -63,14 +61,10 @@
                 <input asp-for="CreatedAt" class="form-control" />
                 <span asp-validation-for="CreatedAt" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary px-4" />
-            </div>
+            <div class="page-actions mt-3"><button type="submit" class="btn btn-primary"><i class="bi bi-check-lg"></i> Save</button></div>
         </form>
     </div>
 </div>
-
-<div class="page-actions"><a class="btn btn-outline-secondary" asp-action="Index">Back to List</a></div>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

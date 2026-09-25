@@ -1,15 +1,18 @@
 @model CarRentalManagementSystem.Models.CarCategory
-
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Create Category";
 }
 
-<h1>Create</h1>
+<div class="page-header">
+    <div>
+        <h1>Create Category</h1>
+        <p class="page-subtitle">Add a new fleet category</p>
+    </div>
+    <div class="page-actions"><a class="btn btn-outline-secondary" asp-action="Index"><i class="bi bi-arrow-left"></i> Back to List</a></div>
+</div>
 
-<h4>CarCategory</h4>
-<hr />
 <div class="row">
-    <div class="col-lg-8 col-xl-7">
+    <div class="col-12">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
@@ -18,28 +21,28 @@
                 <span asp-validation-for="CategoryName" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Description" class="control-label"></label>
-                <input asp-for="Description" class="form-control" />
-                <span asp-validation-for="Description" class="text-danger"></span>
-            </div>
-            <div class="form-group">
                 <label asp-for="BaseDailyRate" class="control-label"></label>
                 <input asp-for="BaseDailyRate" class="form-control" />
                 <span asp-validation-for="BaseDailyRate" class="text-danger"></span>
             </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="IsActive" /> @Html.DisplayNameFor(model => model.IsActive)
+            <div class="form-group form-group-full">
+                <label asp-for="Description" class="control-label"></label>
+                <input asp-for="Description" class="form-control" />
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            <div class="form-group form-check form-switch">
+                <input class="form-check-input" asp-for="IsActive" />
+                <label class="form-check-label" asp-for="IsActive">
+                    Active
+                    <span class="check-hint">Enable this record for use in the system</span>
                 </label>
             </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary px-4" />
+            <div class="page-actions mt-3">
+                <button type="submit" class="btn btn-primary"><i class="bi bi-check-lg"></i> Create</button>
             </div>
         </form>
     </div>
 </div>
-
-<div class="page-actions"><a class="btn btn-outline-secondary" asp-action="Index">Back to List</a></div>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

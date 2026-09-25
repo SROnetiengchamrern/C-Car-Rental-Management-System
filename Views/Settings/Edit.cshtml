@@ -1,0 +1,57 @@
+@model CarRentalManagementSystem.Models.Setting
+@{
+    ViewData["Title"] = "Edit Setting";
+}
+
+<div class="page-header">
+    <div>
+        <h1>Edit Setting</h1>
+        <p class="page-subtitle">Update configuration value</p>
+    </div>
+    <div class="page-actions">
+        <a class="btn btn-outline-secondary" asp-action="Index"><i class="bi bi-arrow-left"></i> Back to List</a>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="SettingId" />
+            <div class="form-group">
+                <label asp-for="GroupName" class="control-label"></label>
+                <input asp-for="GroupName" class="form-control" />
+                <span asp-validation-for="GroupName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="SettingKey" class="control-label"></label>
+                <input asp-for="SettingKey" class="form-control" />
+                <span asp-validation-for="SettingKey" class="text-danger"></span>
+            </div>
+            <div class="form-group form-group-full">
+                <label asp-for="SettingValue" class="control-label"></label>
+                <input asp-for="SettingValue" class="form-control" />
+                <span asp-validation-for="SettingValue" class="text-danger"></span>
+            </div>
+            <div class="form-group form-group-full">
+                <label asp-for="Description" class="control-label"></label>
+                <input asp-for="Description" class="form-control" />
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            <div class="form-group form-check form-switch">
+                <input class="form-check-input" asp-for="IsActive" />
+                <label class="form-check-label" asp-for="IsActive">
+                    Active
+                    <span class="check-hint">Enable this setting for use in the system</span>
+                </label>
+            </div>
+            <div class="page-actions mt-3">
+                <button type="submit" class="btn btn-primary"><i class="bi bi-check-lg"></i> Save</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

@@ -48,7 +48,7 @@ namespace CarRentalManagementSystem.Controllers
         // GET: Employees/Create
         public IActionResult Create()
         {
-            ViewData["BranchId"] = new SelectList(_context.Branches, "BranchId", "Address");
+            ViewData["BranchId"] = new SelectList(_context.Branches, "BranchId", "BranchName");
             return View();
         }
 
@@ -65,7 +65,7 @@ namespace CarRentalManagementSystem.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["BranchId"] = new SelectList(_context.Branches, "BranchId", "Address", employee.BranchId);
+            ViewData["BranchId"] = new SelectList(_context.Branches, "BranchId", "BranchName", employee.BranchId);
             return View(employee);
         }
 
@@ -82,7 +82,7 @@ namespace CarRentalManagementSystem.Controllers
             {
                 return NotFound();
             }
-            ViewData["BranchId"] = new SelectList(_context.Branches, "BranchId", "Address", employee.BranchId);
+            ViewData["BranchId"] = new SelectList(_context.Branches, "BranchId", "BranchName", employee.BranchId);
             return View(employee);
         }
 
@@ -118,7 +118,7 @@ namespace CarRentalManagementSystem.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["BranchId"] = new SelectList(_context.Branches, "BranchId", "Address", employee.BranchId);
+            ViewData["BranchId"] = new SelectList(_context.Branches, "BranchId", "BranchName", employee.BranchId);
             return View(employee);
         }
 
