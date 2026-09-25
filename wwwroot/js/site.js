@@ -96,3 +96,128 @@
         });
     });
 })();
+
+(function () {
+    const STORAGE_KEY = "bookingAlertLastId";
+    const POLL_MS = 6000;
+    const SHOW_MS = 5000;
+    const alertsUrl = "/BookingRequests/Alerts";
+    const host = document.getElementById("bookingAlertHost");
+    const badge = document.getElementById("bookingRequestBadge");
+
+    if (!host) {
+        return;
+    }
+
+    const queue = [];
+    let showing = false;
+    let showingTimer = null;
+    let lastId = Number(localStorage.getItem(STORAGE_KEY) || "0");
+
+    function updateBadge(count) {
+        if (!badge) return;
+        if (count > 0) {
+            badge.textContent = count > 99 ? "99+" : String(count);
+            badge.classList.remove("d-none");
+        } else {
+            badge.classList.add("d-none");
+        }
+    }
+
+    function enqueue(items) {
+        if (!items || !items.length) return;
+        items.forEach(function (item) {
+            if (queue.some(function (q) { return q.bookingRequestId === item.bookingRequestId; })) return;
+            queue.push(item);
+        });
+        pump();
+    }
+
+    function pump() {
+        if (showing || queue.length === 0) return;
+        showing = true;
+        var item = queue.shift();
+        showToast(item);
+        if (item.bookingRequestId > lastId) {
+            lastId = item.bookingRequestId;
+            localStorage.setItem(STORAGE_KEY, String(lastId));
+        }
+        showingTimer = window.setTimeout(function () {
+            hideToast();
+            showing = false;
+            showingTimer = null;
+            pump();
+        }, SHOW_MS);
+    }
+
+    function showToast(item) {
+        var start = item.startDate ? new Date(item.startDate).toLocaleDateString() : "";
+        var end = item.endDate ? new Date(item.endDate).toLocaleDateString() : "";
+        host.innerHTML =
+            '<div class="booking-alert-toast">' +
+            '<div class="booking-alert-icon"><i class="bi bi-bell-fill"></i></div>' +
+            '<div class="booking-alert-body">' +
+            '<div class="booking-alert-title">New booking request</div>' +
+            '<div class="booking-alert-name">' + escapeHtml(item.fullName) + '</div>' +
+            '<div class="booking-alert-meta">' + escapeHtml(item.carName || "") + " · " + start + " – " + end + "</div>" +
+            '<div class="booking-alert-ref">' + escapeHtml(item.reference || "") + "</div>" +
+            "</div>" +
+            '<a class="booking-alert-link" href="/BookingRequests/Details/' + item.bookingRequestId + '">View</a>' +
+            '<button type="button" class="booking-alert-close" aria-label="Dismiss">&times;</button>' +
+            '<div class="booking-alert-progress"></div>' +
+            "</div>";
+
+        var closeBtn = host.querySelector(".booking-alert-close");
+        if (closeBtn) {
+            closeBtn.addEventListener("click", function () {
+                if (showingTimer) {
+                    window.clearTimeout(showingTimer);
+                    showingTimer = null;
+                }
+                hideToast();
+                showing = false;
+                pump();
+            });
+        }
+    }
+
+    function hideToast() {
+        host.innerHTML = "";
+    }
+
+    function escapeHtml(value) {
+        return String(value == null ? "" : value)
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;");
+    }
+
+    async function poll() {
+        try {
+            var afterId = lastId > 0 ? lastId : 0;
+            var res = await fetch(alertsUrl + "?afterId=" + afterId, {
+                headers: { Accept: "application/json" },
+                credentials: "same-origin"
+            });
+            if (!res.ok) return;
+            var data = await res.json();
+            updateBadge(data.newCount || 0);
+
+            if (lastId <= 0) {
+                lastId = data.maxId || 0;
+                localStorage.setItem(STORAGE_KEY, String(lastId));
+                return;
+            }
+
+            if (data.items && data.items.length) {
+                enqueue(data.items);
+            }
+        } catch (e) {
+            /* ignore */
+        }
+    }
+
+    poll();
+    window.setInterval(poll, POLL_MS);
+})();

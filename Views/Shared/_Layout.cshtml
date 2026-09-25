@@ -47,7 +47,10 @@
 
                 <div class="nav-section">
                     <div class="nav-section-title">Rentals</div>
-                    <a class="nav-link @IsActive("BookingRequests")" asp-controller="BookingRequests" asp-action="Index"><i class="bi bi-inbox"></i> Booking Requests</a>
+                    <a class="nav-link @IsActive("BookingRequests")" asp-controller="BookingRequests" asp-action="Index">
+                        <i class="bi bi-inbox"></i> Booking Requests
+                        <span class="nav-alert-badge d-none" id="bookingRequestBadge">0</span>
+                    </a>
                     <a class="nav-link @IsActive("RentalContracts")" asp-controller="RentalContracts" asp-action="Index"><i class="bi bi-file-earmark-text"></i> Rental Contracts</a>
                     <a class="nav-link @IsActive("RentalContractDetails")" asp-controller="RentalContractDetails" asp-action="Index"><i class="bi bi-list-check"></i> Contract Details</a>
                     <a class="nav-link @IsActive("Invoices")" asp-controller="Invoices" asp-action="Index"><i class="bi bi-receipt"></i> Invoices</a>
@@ -115,6 +118,8 @@
             </footer>
         </div>
     </div>
+
+    <div id="bookingAlertHost" class="booking-alert-host" aria-live="polite" aria-atomic="true"></div>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>

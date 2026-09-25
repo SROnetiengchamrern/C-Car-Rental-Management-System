@@ -75,7 +75,7 @@
             <form asp-action="UpdateStatus" method="post" class="d-flex flex-wrap gap-2">
                 @Html.AntiForgeryToken()
                 <input type="hidden" name="id" value="@Model.BookingRequestId" />
-                <select name="status" class="form-select" style="max-width: 180px;">
+                <select name="status" class="form-select">
                     @foreach (var s in new[] { "New", "Contacted", "Confirmed", "Cancelled" })
                     {
                         if (s == Model.Status)

@@ -1203,3 +1203,137 @@ button.btn i {
     padding: 0;
   }
 }
+
+/* Booking request live alerts */
+.nav-alert-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.25rem;
+  height: 1.25rem;
+  margin-left: auto;
+  padding: 0 0.35rem;
+  border-radius: 999px;
+  background: #dc2626;
+  color: #fff;
+  font-size: 0.68rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.booking-alert-host {
+  position: fixed;
+  top: 1.15rem;
+  right: 1.15rem;
+  z-index: 1080;
+  width: min(380px, calc(100vw - 2rem));
+  pointer-events: none;
+}
+
+.booking-alert-toast {
+  position: relative;
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+  padding: 0.95rem 1rem 1.05rem;
+  background: #0f172a;
+  color: #f8fafc;
+  border-radius: 12px;
+  box-shadow: 0 12px 40px rgba(15, 23, 42, 0.35);
+  overflow: hidden;
+  pointer-events: auto;
+  animation: booking-alert-in 0.35s ease;
+}
+
+@keyframes booking-alert-in {
+  from {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.booking-alert-icon {
+  flex: 0 0 auto;
+  width: 2.1rem;
+  height: 2.1rem;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: #0d9488;
+  color: #fff;
+}
+
+.booking-alert-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.booking-alert-title {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #94a3b8;
+  margin-bottom: 0.15rem;
+}
+
+.booking-alert-name {
+  font-weight: 700;
+  font-size: 1rem;
+  line-height: 1.25;
+}
+
+.booking-alert-meta,
+.booking-alert-ref {
+  font-size: 0.82rem;
+  color: #cbd5e1;
+  margin-top: 0.15rem;
+}
+
+.booking-alert-link {
+  align-self: center;
+  color: #5eead4;
+  font-weight: 600;
+  font-size: 0.85rem;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.booking-alert-link:hover {
+  color: #99f6e4;
+}
+
+.booking-alert-close {
+  position: absolute;
+  top: 0.35rem;
+  right: 0.45rem;
+  border: none;
+  background: transparent;
+  color: #94a3b8;
+  font-size: 1.2rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.booking-alert-progress {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 3px;
+  width: 100%;
+  background: #0d9488;
+  transform-origin: left center;
+  animation: booking-alert-progress 5s linear forwards;
+}
+
+@keyframes booking-alert-progress {
+  from { transform: scaleX(1); }
+  to { transform: scaleX(0); }
+}
+
+.status-new { background: #fee2e2; color: #991b1b; }
+.status-contacted { background: #fff0d6; color: #8a5a00; }
+.status-confirmed { background: #d9f2ec; color: #146b5a; }
