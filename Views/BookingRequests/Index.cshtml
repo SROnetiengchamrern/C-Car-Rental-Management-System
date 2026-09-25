@@ -1,0 +1,52 @@
+@model IEnumerable<CarRentalManagementSystem.Models.BookingRequest>
+@{
+    ViewData["Title"] = "Booking Requests";
+}
+
+<div class="page-header">
+    <div>
+        <h1>Booking Requests</h1>
+        <p class="page-subtitle">Requests from the customer website</p>
+    </div>
+</div>
+
+<div class="table-panel">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0 datatable w-100">
+            <thead>
+                <tr>
+                    <th>Created</th>
+                    <th>Reference</th>
+                    <th>Customer</th>
+                    <th>Car</th>
+                    <th>Dates</th>
+                    <th>Status</th>
+                    <th class="text-end">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach (var item in Model)
+            {
+                var statusClass = "status-" + (item.Status ?? "").Replace(" ", "").ToLowerInvariant();
+                <tr>
+                    <td>@item.CreatedAt.ToString("dd MMM yyyy HH:mm")</td>
+                    <td><strong>@item.Reference</strong></td>
+                    <td>
+                        @item.FullName
+                        <div class="text-muted small">@item.Email · @item.Phone</div>
+                    </td>
+                    <td>@(item.Car != null ? $"{item.Car.Make} {item.Car.Model}" : $"#{item.CarId}")</td>
+                    <td>@item.StartDate.ToString("dd MMM yyyy") – @item.EndDate.ToString("dd MMM yyyy")</td>
+                    <td><span class="status-badge @statusClass">@item.Status</span></td>
+                    <td>
+                        <div class="table-actions">
+                            <a class="btn btn-sm btn-outline-secondary" asp-action="Details" asp-route-id="@item.BookingRequestId"><i class="bi bi-eye"></i> Details</a>
+                            <a class="btn btn-sm btn-outline-danger" asp-action="Delete" asp-route-id="@item.BookingRequestId"><i class="bi bi-trash"></i> Delete</a>
+                        </div>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+</div>

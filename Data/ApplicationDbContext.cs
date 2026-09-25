@@ -24,6 +24,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<CarMaintenance> CarMaintenances => Set<CarMaintenance>();
     public DbSet<CarStatusHistory> CarStatusHistories => Set<CarStatusHistory>();
     public DbSet<Setting> Settings => Set<Setting>();
+    public DbSet<BookingRequest> BookingRequests => Set<BookingRequest>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -42,6 +43,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
         modelBuilder.Entity<CarMaintenance>().ToTable("CarMaintenance");
         modelBuilder.Entity<CarStatusHistory>().ToTable("CarStatusHistory");
         modelBuilder.Entity<Setting>().ToTable("Settings");
+        modelBuilder.Entity<BookingRequest>().ToTable("BookingRequests");
 
         modelBuilder.Entity<Setting>()
             .HasIndex(s => s.SettingKey)
@@ -62,6 +64,16 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
         modelBuilder.Entity<RentalContract>()
             .HasIndex(c => c.ContractNumber)
             .IsUnique();
+
+        modelBuilder.Entity<BookingRequest>()
+            .HasIndex(b => b.Reference)
+            .IsUnique();
+
+        modelBuilder.Entity<BookingRequest>()
+            .HasOne(b => b.Car)
+            .WithMany()
+            .HasForeignKey(b => b.CarId)
+            .OnDelete(DeleteBehavior.Restrict);
 
         modelBuilder.Entity<Employee>()
             .HasOne(e => e.Branch)

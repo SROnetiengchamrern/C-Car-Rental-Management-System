@@ -1,0 +1,95 @@
+@model CarRentalManagementSystem.Models.BookingRequest
+@{
+    ViewData["Title"] = "Booking Request Details";
+    var statusClass = "status-" + (Model.Status ?? "").Replace(" ", "").ToLowerInvariant();
+}
+
+<div class="page-header">
+    <div>
+        <h1>Booking Request</h1>
+        <p class="page-subtitle">@Model.Reference</p>
+    </div>
+    <div class="page-actions">
+        <a class="btn btn-outline-secondary" asp-action="Index"><i class="bi bi-arrow-left"></i> Back</a>
+        <a class="btn btn-outline-danger" asp-action="Delete" asp-route-id="@Model.BookingRequestId"><i class="bi bi-trash"></i> Delete</a>
+    </div>
+</div>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+
+<div class="row g-4">
+    <div class="col-lg-7">
+        <div class="table-panel p-3">
+            <h2 class="h5 mb-3">Customer</h2>
+            <dl class="row mb-0">
+                <dt class="col-sm-4">Full name</dt>
+                <dd class="col-sm-8">@Model.FullName</dd>
+                <dt class="col-sm-4">Email</dt>
+                <dd class="col-sm-8">@Model.Email</dd>
+                <dt class="col-sm-4">Phone</dt>
+                <dd class="col-sm-8">@Model.Phone</dd>
+                <dt class="col-sm-4">Notes</dt>
+                <dd class="col-sm-8">@(string.IsNullOrWhiteSpace(Model.Notes) ? "—" : Model.Notes)</dd>
+            </dl>
+        </div>
+
+        <div class="table-panel p-3 mt-3">
+            <h2 class="h5 mb-3">Rental</h2>
+            <dl class="row mb-0">
+                <dt class="col-sm-4">Car</dt>
+                <dd class="col-sm-8">
+                    @if (Model.Car != null)
+                    {
+                        <text>@Model.Car.Make @Model.Car.Model (@Model.Car.Year) — @Model.Car.LicensePlate</text>
+                    }
+                    else
+                    {
+                        <text>#@Model.CarId</text>
+                    }
+                </dd>
+                <dt class="col-sm-4">Category</dt>
+                <dd class="col-sm-8">@(Model.Car?.Category?.CategoryName ?? "—")</dd>
+                <dt class="col-sm-4">Branch</dt>
+                <dd class="col-sm-8">@(Model.Car?.Branch?.BranchName ?? "—")</dd>
+                <dt class="col-sm-4">Start</dt>
+                <dd class="col-sm-8">@Model.StartDate.ToString("dd MMM yyyy")</dd>
+                <dt class="col-sm-4">End</dt>
+                <dd class="col-sm-8">@Model.EndDate.ToString("dd MMM yyyy")</dd>
+                <dt class="col-sm-4">Created</dt>
+                <dd class="col-sm-8">@Model.CreatedAt.ToString("dd MMM yyyy HH:mm")</dd>
+            </dl>
+        </div>
+    </div>
+
+    <div class="col-lg-5">
+        <div class="table-panel p-3">
+            <h2 class="h5 mb-3">Status</h2>
+            <p><span class="status-badge @statusClass">@Model.Status</span></p>
+            <form asp-action="UpdateStatus" method="post" class="d-flex flex-wrap gap-2">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="id" value="@Model.BookingRequestId" />
+                <select name="status" class="form-select" style="max-width: 180px;">
+                    @foreach (var s in new[] { "New", "Contacted", "Confirmed", "Cancelled" })
+                    {
+                        if (s == Model.Status)
+                        {
+                            <option value="@s" selected>@s</option>
+                        }
+                        else
+                        {
+                            <option value="@s">@s</option>
+                        }
+                    }
+                </select>
+                <button type="submit" class="btn btn-primary">Update status</button>
+            </form>
+        </div>
+    </div>
+</div>

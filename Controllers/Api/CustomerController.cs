@@ -113,8 +113,13 @@ public class CustomerController : ControllerBase
     }
 
     [HttpPost("booking-requests")]
-    public ActionResult<object> CreateBookingRequest([FromBody] CustomerBookingRequest request)
+    public async Task<ActionResult<object>> CreateBookingRequest([FromBody] CustomerBookingRequest? request)
     {
+        if (request is null)
+        {
+            return BadRequest(new { message = "Invalid booking request." });
+        }
+
         if (request.CarId <= 0 ||
             string.IsNullOrWhiteSpace(request.FullName) ||
             string.IsNullOrWhiteSpace(request.Email) ||
@@ -123,15 +128,50 @@ public class CustomerController : ControllerBase
             return BadRequest(new { message = "Please fill name, email, phone, and car." });
         }
 
+        if (request.StartDate == default || request.EndDate == default)
+        {
+            return BadRequest(new { message = "Please choose start and end dates." });
+        }
+
         if (request.EndDate.Date < request.StartDate.Date)
         {
-            return BadRequest(new { message = "End date must be after start date." });
+            return BadRequest(new { message = "End date must be on or after start date." });
         }
+
+        var car = await _context.Cars.AsNoTracking().FirstOrDefaultAsync(c => c.CarId == request.CarId);
+        if (car is null)
+        {
+            return BadRequest(new { message = "Car not found." });
+        }
+
+        if (!string.Equals(car.Status, "Available", StringComparison.OrdinalIgnoreCase))
+        {
+            return BadRequest(new { message = "This car is not available for booking right now." });
+        }
+
+        var reference = $"BR-{DateTime.UtcNow:yyyyMMddHHmmss}-{request.CarId}";
+        var booking = new Models.BookingRequest
+        {
+            Reference = reference,
+            CarId = request.CarId,
+            FullName = request.FullName.Trim(),
+            Email = request.Email.Trim(),
+            Phone = request.Phone.Trim(),
+            StartDate = request.StartDate.Date,
+            EndDate = request.EndDate.Date,
+            Notes = string.IsNullOrWhiteSpace(request.Notes) ? null : request.Notes.Trim(),
+            Status = "New",
+            CreatedAt = DateTime.Now
+        };
+
+        _context.BookingRequests.Add(booking);
+        await _context.SaveChangesAsync();
 
         return Ok(new
         {
             message = "Booking request received. Our team will contact you shortly.",
-            reference = $"BR-{DateTime.UtcNow:yyyyMMddHHmmss}-{request.CarId}"
+            reference,
+            bookingRequestId = booking.BookingRequestId
         });
     }
 

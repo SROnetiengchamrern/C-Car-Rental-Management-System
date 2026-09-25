@@ -2,42 +2,71 @@ import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { api, resolveImage } from '../api';
 
+const emptyForm = {
+  fullName: '',
+  email: '',
+  phone: '',
+  startDate: '',
+  endDate: '',
+  notes: '',
+};
+
 export default function CarDetail() {
   const { id } = useParams();
   const [car, setCar] = useState(null);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [submitting, setSubmitting] = useState(false);
-  const [form, setForm] = useState({
-    fullName: '',
-    email: '',
-    phone: '',
-    startDate: '',
-    endDate: '',
-    notes: '',
-  });
+  const [form, setForm] = useState(emptyForm);
 
   useEffect(() => {
+    setError('');
+    setSuccess('');
     api
       .getCar(id)
       .then(setCar)
       .catch((err) => setError(err.message));
   }, [id]);
 
+  function validate() {
+    if (!form.fullName.trim() || !form.email.trim() || !form.phone.trim()) {
+      return 'Please fill name, email, and phone.';
+    }
+    if (!form.startDate || !form.endDate) {
+      return 'Please choose start and end dates.';
+    }
+    if (form.endDate < form.startDate) {
+      return 'End date must be on or after start date.';
+    }
+    return '';
+  }
+
   async function onSubmit(e) {
     e.preventDefault();
+    setSuccess('');
+
+    const validationError = validate();
+    if (validationError) {
+      setError(validationError);
+      return;
+    }
+
     setSubmitting(true);
     setError('');
-    setSuccess('');
     try {
       const result = await api.createBooking({
         carId: Number(id),
-        ...form,
+        fullName: form.fullName.trim(),
+        email: form.email.trim(),
+        phone: form.phone.trim(),
+        startDate: form.startDate,
+        endDate: form.endDate,
+        notes: form.notes.trim() || null,
       });
       setSuccess(`${result.message} Ref: ${result.reference}`);
       setForm((f) => ({ ...f, notes: '' }));
     } catch (err) {
-      setError(err.message);
+      setError(err.message || 'Could not send booking request.');
     } finally {
       setSubmitting(false);
     }
@@ -48,6 +77,7 @@ export default function CarDetail() {
 
   const image = resolveImage(car.imageUrl);
   const title = `${car.make} ${car.model}`;
+  const available = car.status === 'Available';
 
   return (
     <section className="section car-detail">
@@ -83,13 +113,17 @@ export default function CarDetail() {
             <li>{car.branchName}</li>
           </ul>
 
-          <form className="booking-form" onSubmit={onSubmit}>
+          <form className="booking-form" onSubmit={onSubmit} noValidate>
             <h2>Request this car</h2>
+            {!available && (
+              <p className="error-banner">This car is not available for booking right now.</p>
+            )}
             <div className="form-row">
               <label>
                 Full name
                 <input
                   required
+                  autoComplete="name"
                   value={form.fullName}
                   onChange={(e) => setForm({ ...form, fullName: e.target.value })}
                 />
@@ -99,6 +133,7 @@ export default function CarDetail() {
                 <input
                   required
                   type="email"
+                  autoComplete="email"
                   value={form.email}
                   onChange={(e) => setForm({ ...form, email: e.target.value })}
                 />
@@ -109,6 +144,7 @@ export default function CarDetail() {
                 Phone
                 <input
                   required
+                  autoComplete="tel"
                   value={form.phone}
                   onChange={(e) => setForm({ ...form, phone: e.target.value })}
                 />
@@ -127,6 +163,7 @@ export default function CarDetail() {
                 <input
                   required
                   type="date"
+                  min={form.startDate || undefined}
                   value={form.endDate}
                   onChange={(e) => setForm({ ...form, endDate: e.target.value })}
                 />
@@ -142,7 +179,7 @@ export default function CarDetail() {
             </label>
             {error && <p className="error-banner">{error}</p>}
             {success && <p className="success-banner">{success}</p>}
-            <button className="btn-primary" type="submit" disabled={submitting || car.status !== 'Available'}>
+            <button className="btn-primary" type="submit" disabled={submitting || !available}>
               {submitting ? 'Sending…' : 'Send booking request'}
             </button>
           </form>
