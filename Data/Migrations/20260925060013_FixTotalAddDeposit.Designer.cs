@@ -4,6 +4,7 @@ using CarRentalManagementSystem.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CarRentalManagementSystem.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260925060013_FixTotalAddDeposit")]
+    partial class FixTotalAddDeposit
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -2356,7 +2359,7 @@ namespace CarRentalManagementSystem.Data.Migrations
                             Notes = "City trip",
                             StartDate = new DateTime(2025, 6, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Status = "Completed",
-                            TotalAmount = 150m
+                            TotalAmount = 250m
                         },
                         new
                         {
@@ -2372,7 +2375,7 @@ namespace CarRentalManagementSystem.Data.Migrations
                             Notes = "Temple tour",
                             StartDate = new DateTime(2025, 6, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Status = "Completed",
-                            TotalAmount = 400m
+                            TotalAmount = 600m
                         },
                         new
                         {
@@ -2388,7 +2391,7 @@ namespace CarRentalManagementSystem.Data.Migrations
                             Notes = "Business week",
                             StartDate = new DateTime(2025, 7, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Status = "Active",
-                            TotalAmount = 280m
+                            TotalAmount = 440m
                         },
                         new
                         {
@@ -2404,7 +2407,7 @@ namespace CarRentalManagementSystem.Data.Migrations
                             Notes = "Beach weekend",
                             StartDate = new DateTime(2025, 7, 5, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Status = "Active",
-                            TotalAmount = 105m
+                            TotalAmount = 225m
                         },
                         new
                         {
@@ -2419,7 +2422,7 @@ namespace CarRentalManagementSystem.Data.Migrations
                             EndDate = new DateTime(2025, 5, 4, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             StartDate = new DateTime(2025, 5, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Status = "Completed",
-                            TotalAmount = 56m
+                            TotalAmount = 136m
                         },
                         new
                         {
@@ -2435,7 +2438,7 @@ namespace CarRentalManagementSystem.Data.Migrations
                             Notes = "Family trip",
                             StartDate = new DateTime(2025, 7, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Status = "Active",
-                            TotalAmount = 240m
+                            TotalAmount = 380m
                         },
                         new
                         {
@@ -2450,7 +2453,7 @@ namespace CarRentalManagementSystem.Data.Migrations
                             EndDate = new DateTime(2025, 4, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             StartDate = new DateTime(2025, 4, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Status = "Completed",
-                            TotalAmount = 70m
+                            TotalAmount = 170m
                         },
                         new
                         {
@@ -2466,7 +2469,7 @@ namespace CarRentalManagementSystem.Data.Migrations
                             Notes = "Group van",
                             StartDate = new DateTime(2025, 6, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Status = "Completed",
-                            TotalAmount = 285m
+                            TotalAmount = 465m
                         },
                         new
                         {
@@ -2482,7 +2485,7 @@ namespace CarRentalManagementSystem.Data.Migrations
                             Notes = "Airport pickup",
                             StartDate = new DateTime(2025, 7, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Status = "Active",
-                            TotalAmount = 76m
+                            TotalAmount = 176m
                         },
                         new
                         {
@@ -2498,7 +2501,7 @@ namespace CarRentalManagementSystem.Data.Migrations
                             Notes = "Convertible weekend",
                             StartDate = new DateTime(2025, 5, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Status = "Completed",
-                            TotalAmount = 116m
+                            TotalAmount = 276m
                         },
                         new
                         {
@@ -2529,7 +2532,7 @@ namespace CarRentalManagementSystem.Data.Migrations
                             EndDate = new DateTime(2025, 6, 3, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             StartDate = new DateTime(2025, 6, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Status = "Completed",
-                            TotalAmount = 120m
+                            TotalAmount = 240m
                         },
                         new
                         {
@@ -2545,7 +2548,7 @@ namespace CarRentalManagementSystem.Data.Migrations
                             Notes = "Long rental",
                             StartDate = new DateTime(2025, 7, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Status = "Active",
-                            TotalAmount = 750m
+                            TotalAmount = 1050m
                         },
                         new
                         {
@@ -2560,7 +2563,7 @@ namespace CarRentalManagementSystem.Data.Migrations
                             EndDate = new DateTime(2025, 5, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             StartDate = new DateTime(2025, 5, 8, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Status = "Completed",
-                            TotalAmount = 50m
+                            TotalAmount = 110m
                         },
                         new
                         {
@@ -2576,7 +2579,7 @@ namespace CarRentalManagementSystem.Data.Migrations
                             Notes = "Sports car",
                             StartDate = new DateTime(2025, 7, 8, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Status = "Active",
-                            TotalAmount = 480m
+                            TotalAmount = 720m
                         });
                 });
 

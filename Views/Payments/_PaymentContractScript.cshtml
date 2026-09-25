@@ -1,0 +1,45 @@
+<script>
+    (function () {
+        const summaries = @Html.Raw(ViewData["ContractSummaryJson"] ?? "{}");
+        const contractSelect = document.getElementById("ContractId");
+        const amountInput = document.getElementById("Amount");
+        const amountHint = document.getElementById("amountHint");
+        const box = document.getElementById("paymentSummaryBox");
+        const money = (n) => Number(n || 0).toLocaleString(undefined, { style: "currency", currency: "USD" });
+
+        function fillSummary() {
+            const data = summaries[contractSelect?.value];
+            if (!data) {
+                if (box) box.style.display = "none";
+                if (amountHint) amountHint.textContent = "Select a contract to auto-fill amount";
+                return;
+            }
+
+            // Same layout as invoice:
+            // Sub Total → Discount → Total Due → Deposit (Paid) → Total
+            if (box) box.style.display = "";
+            document.getElementById("sumSubTotal").textContent = money(data.subTotal);
+            document.getElementById("sumDiscount").textContent = "-" + money(data.discount);
+            document.getElementById("sumTotalDue").textContent = money(data.totalDue);
+            document.getElementById("sumDeposit").textContent = money(data.deposit);
+            document.getElementById("sumTotal").textContent = money(data.total);
+
+            if (amountInput && (!amountInput.value || Number(amountInput.value) === 0)) {
+                amountInput.value = Number(data.suggested || 0).toFixed(2);
+            }
+
+            if (amountHint) {
+                amountHint.textContent = data.paid <= 0 && data.deposit > 0
+                    ? "Suggested: Deposit (Paid)"
+                    : "Suggested: Remaining after deposit (Total)";
+            }
+        }
+
+        contractSelect?.addEventListener("change", function () {
+            if (amountInput) amountInput.value = "";
+            fillSummary();
+        });
+
+        fillSummary();
+    })();
+</script>

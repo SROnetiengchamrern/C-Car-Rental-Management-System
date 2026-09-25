@@ -1,0 +1,125 @@
+@model CarRentalManagementSystem.ViewModels.InvoiceDetailViewModel
+@{
+    ViewData["Title"] = "Invoice " + Model.InvoiceNumber;
+    var contract = Model.Contract;
+    var customer = contract.Customer;
+    var branch = contract.Branch;
+}
+
+<div class="page-header no-print">
+    <div>
+        <h1>Invoice</h1>
+        <p class="page-subtitle">@Model.InvoiceNumber</p>
+    </div>
+    <div class="page-actions">
+        <button type="button" class="btn btn-primary" onclick="window.print()">
+            <i class="bi bi-printer"></i> Print
+        </button>
+        <a class="btn btn-outline-secondary" asp-action="Index">
+            <i class="bi bi-arrow-left"></i> Back to List
+        </a>
+    </div>
+</div>
+
+<div class="invoice-sheet">
+    <div class="invoice-top">
+        <div>
+            <div class="invoice-brand"><i class="bi bi-car-front-fill"></i> CarRental</div>
+            <div class="invoice-muted">@branch?.BranchName</div>
+            <div class="invoice-muted">@branch?.Address, @branch?.City</div>
+            <div class="invoice-muted">@branch?.Phone · @branch?.Email</div>
+        </div>
+        <div class="invoice-meta">
+            <h2>INVOICE</h2>
+            <div><span>Invoice #</span><strong>@Model.InvoiceNumber</strong></div>
+            <div><span>Contract #</span><strong>@contract.ContractNumber</strong></div>
+            <div><span>Date</span><strong>@Model.InvoiceDate.ToString("dd MMM yyyy")</strong></div>
+            <div><span>Status</span><strong>@contract.Status</strong></div>
+        </div>
+    </div>
+
+    <div class="invoice-parties">
+        <div>
+            <h3>Bill To</h3>
+            <strong>@(customer?.FullName ?? "—")</strong>
+            <div class="invoice-muted">@customer?.Email</div>
+            <div class="invoice-muted">@customer?.Phone</div>
+            <div class="invoice-muted">@customer?.Address, @customer?.City</div>
+            <div class="invoice-muted">License: @customer?.LicenseNumber</div>
+        </div>
+        <div>
+            <h3>Rental Period</h3>
+            <div><span>Start</span><strong>@contract.StartDate.ToString("dd MMM yyyy")</strong></div>
+            <div><span>End</span><strong>@contract.EndDate.ToString("dd MMM yyyy")</strong></div>
+            <div><span>Staff</span><strong>@(contract.Employee != null ? $"{contract.Employee.FirstName} {contract.Employee.LastName}" : "—")</strong></div>
+        </div>
+    </div>
+
+    <table class="invoice-table">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Description</th>
+                <th>Daily Rate</th>
+                <th>Days</th>
+                <th class="text-end">Subtotal</th>
+            </tr>
+        </thead>
+        <tbody>
+        @{ var i = 1; }
+        @foreach (var line in Model.Lines)
+        {
+            <tr>
+                <td>@i</td>
+                <td>
+                    <strong>@line.Car?.Make @line.Car?.Model</strong>
+                    <div class="invoice-muted">@line.Car?.LicensePlate · @line.Car?.Color · @line.Car?.Year</div>
+                </td>
+                <td class="money">@line.DailyRate.ToString("C")</td>
+                <td>@line.Days</td>
+                <td class="money text-end">@line.SubTotal.ToString("C")</td>
+            </tr>
+            i++;
+        }
+        @if (!Model.Lines.Any())
+        {
+            <tr>
+                <td colspan="5" class="text-center text-muted py-3">No cars on this invoice.</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+
+    <div class="invoice-summary">
+        <div class="invoice-notes">
+            <h3>Notes</h3>
+            <p>@(string.IsNullOrWhiteSpace(contract.Notes) ? "—" : contract.Notes)</p>
+
+            @if (Model.Payments.Any())
+            {
+                <h3>Payments</h3>
+                <ul class="invoice-payments">
+                @foreach (var payment in Model.Payments)
+                {
+                    <li>
+                        @payment.PaymentDate.ToString("dd MMM yyyy") · @payment.PaymentMethod ·
+                        <span class="money">@payment.Amount.ToString("C")</span>
+                        (@payment.Status)
+                    </li>
+                }
+                </ul>
+            }
+        </div>
+        <div class="invoice-totals">
+            <div><span>Sub Total</span><strong class="money">@Model.SubTotal.ToString("C")</strong></div>
+            <div><span>Discount</span><strong class="money">-@Model.DiscountAmount.ToString("C")</strong></div>
+            <div class="invoice-divider"><span>Total Due</span><strong class="money">@Model.TotalDue.ToString("C")</strong></div>
+            <div><span>Deposit (Paid)</span><strong class="money">@Model.DepositAmount.ToString("C")</strong></div>
+            <div class="invoice-grand"><span>Total</span><strong class="money">@Model.TotalAmount.ToString("C")</strong></div>
+        </div>
+    </div>
+
+    <div class="invoice-footer">
+        Thank you for renting with CarRental. Please keep this invoice for your records.
+    </div>
+</div>

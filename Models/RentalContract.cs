@@ -42,6 +42,12 @@ public class RentalContract
     [Column(TypeName = "decimal(18,2)")]
     public decimal TotalAmount { get; set; }
 
+    [Display(Name = "Discount")]
+    [DataType(DataType.Currency)]
+    [Column(TypeName = "decimal(18,2)")]
+    [Range(0, 999999)]
+    public decimal DiscountAmount { get; set; }
+
     [Display(Name = "Deposit Amount")]
     [DataType(DataType.Currency)]
     [Column(TypeName = "decimal(18,2)")]

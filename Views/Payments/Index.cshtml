@@ -33,7 +33,9 @@
                 var statusClass = "status-" + (item.Status ?? "").Replace(" ", "").ToLowerInvariant();
                 <tr>
                     <td>@item.PaymentDate.ToString("dd MMM yyyy HH:mm")</td>
-                    <td><strong>@item.RentalContract?.ContractNumber</strong></td>
+                    <td><strong>@item.RentalContract?.ContractNumber</strong>
+                        <div class="text-muted small">@item.RentalContract?.Customer?.FullName</div>
+                    </td>
                     <td class="money">@item.Amount.ToString("C")</td>
                     <td>@item.PaymentMethod</td>
                     <td><span class="status-badge @statusClass">@item.Status</span></td>

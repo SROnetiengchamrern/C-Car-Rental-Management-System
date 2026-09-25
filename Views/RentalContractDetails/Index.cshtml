@@ -19,10 +19,14 @@
             <thead>
                 <tr>
                     <th>Contract</th>
+                    <th>Customer</th>
                     <th>Car</th>
                     <th>Daily Rate</th>
                     <th>Days</th>
                     <th>Subtotal</th>
+                    <th>Discount</th>
+                    <th>Deposit</th>
+                    <th>Total</th>
                     <th class="text-end">Actions</th>
                 </tr>
             </thead>
@@ -31,10 +35,19 @@
             {
                 <tr>
                     <td><strong>@item.RentalContract?.ContractNumber</strong></td>
+                    <td>@item.RentalContract?.Customer?.FullName</td>
                     <td>@item.Car?.Make @item.Car?.Model (@item.Car?.LicensePlate)</td>
                     <td class="money">@item.DailyRate.ToString("C")</td>
                     <td>@item.Days</td>
                     <td class="money">@item.SubTotal.ToString("C")</td>
+                    <td class="money">@((item.RentalContract?.DiscountAmount ?? 0).ToString("C"))</td>
+                    <td class="money">@((item.RentalContract?.DepositAmount ?? 0).ToString("C"))</td>
+                    <td class="money">@{
+                        var rowTotal = Math.Max(0,
+                            item.SubTotal
+                            - (item.RentalContract?.DiscountAmount ?? 0)
+                            - (item.RentalContract?.DepositAmount ?? 0));
+                    }@rowTotal.ToString("C")</td>
                     <td>
                         <div class="table-actions">
                             <a class="btn btn-sm btn-outline-primary" asp-action="Edit" asp-route-id="@item.DetailId"><i class="bi bi-pencil-square"></i> Edit</a>

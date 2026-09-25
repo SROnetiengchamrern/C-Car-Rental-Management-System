@@ -1,58 +1,104 @@
 @model CarRentalManagementSystem.Models.Payment
-
 @{
     ViewData["Title"] = "Create Payment";
 }
 
-<div class="page-header"><div><h1>Create Payment</h1><p class="page-subtitle">Record a payment</p></div>
-    <div class="page-actions"><a class="btn btn-outline-secondary" asp-action="Index"><i class="bi bi-arrow-left"></i> Back to List</a></div>
+<div class="page-header">
+    <div>
+        <h1>Create Payment</h1>
+        <p class="page-subtitle">Record a payment</p>
+    </div>
+    <div class="page-actions">
+        <a class="btn btn-outline-secondary" asp-action="Index"><i class="bi bi-arrow-left"></i> Back to List</a>
+    </div>
 </div>
+
 <div class="row">
     <div class="col-12">
-        <form asp-action="Create">
+        <form asp-action="Create" id="paymentForm">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
             <div class="form-group">
                 <label asp-for="ContractId" class="control-label"></label>
-                <select asp-for="ContractId" class="form-control" asp-items="ViewBag.ContractId"></select>
+                <select asp-for="ContractId" class="form-control" asp-items="ViewBag.ContractId">
+                    <option value="">-- Choose contract --</option>
+                </select>
+                <span asp-validation-for="ContractId" class="text-danger"></span>
             </div>
+
             <div class="form-group">
                 <label asp-for="Amount" class="control-label"></label>
                 <input asp-for="Amount" class="form-control" />
+                <span class="form-text text-muted" id="amountHint">Select a contract to auto-fill amount</span>
                 <span asp-validation-for="Amount" class="text-danger"></span>
             </div>
+
+            <div class="form-group form-group-full" id="paymentSummaryBox" style="display:none;">
+                <div class="payment-summary">
+                    <div><span>Sub Total</span><strong id="sumSubTotal">—</strong></div>
+                    <div><span>Discount</span><strong id="sumDiscount">—</strong></div>
+                    <div class="payment-summary-divider"><span>Total Due</span><strong id="sumTotalDue">—</strong></div>
+                    <div><span>Deposit (Paid)</span><strong id="sumDeposit">—</strong></div>
+                    <div class="payment-summary-total"><span>Total</span><strong id="sumTotal">—</strong></div>
+                </div>
+            </div>
+
             <div class="form-group">
                 <label asp-for="PaymentDate" class="control-label"></label>
                 <input asp-for="PaymentDate" class="form-control" />
                 <span asp-validation-for="PaymentDate" class="text-danger"></span>
             </div>
+
             <div class="form-group">
                 <label asp-for="PaymentMethod" class="control-label"></label>
-                <input asp-for="PaymentMethod" class="form-control" />
+                <select asp-for="PaymentMethod" class="form-control">
+                    <option value="Cash">Cash</option>
+                    <option value="Card">Card</option>
+                    <option value="Transfer">Transfer</option>
+                    <option value="Other">Other</option>
+                </select>
                 <span asp-validation-for="PaymentMethod" class="text-danger"></span>
             </div>
+
             <div class="form-group">
                 <label asp-for="TransactionReference" class="control-label"></label>
-                <input asp-for="TransactionReference" class="form-control" />
+                <input asp-for="TransactionReference" class="form-control" placeholder="Optional reference" />
                 <span asp-validation-for="TransactionReference" class="text-danger"></span>
             </div>
+
             <div class="form-group">
                 <label asp-for="Status" class="control-label"></label>
-                <input asp-for="Status" class="form-control" />
+                <select asp-for="Status" class="form-control">
+                    <option value="Completed">Completed</option>
+                    <option value="Pending">Pending</option>
+                    <option value="Failed">Failed</option>
+                    <option value="Refunded">Refunded</option>
+                </select>
                 <span asp-validation-for="Status" class="text-danger"></span>
             </div>
-            <div class="form-group form-group-full"><label asp-for="Notes" class="control-label"></label>
-                <input asp-for="Notes" class="form-control" />
+
+            <div class="form-group form-group-full">
+                <label asp-for="Notes" class="control-label"></label>
+                <input asp-for="Notes" class="form-control" placeholder="e.g. Deposit / Final payment" />
                 <span asp-validation-for="Notes" class="text-danger"></span>
             </div>
+
             <div class="form-group">
                 <label asp-for="ReceivedByEmployeeId" class="control-label"></label>
-                <select asp-for="ReceivedByEmployeeId" class="form-control" asp-items="ViewBag.ReceivedByEmployeeId"></select>
+                <select asp-for="ReceivedByEmployeeId" class="form-control" asp-items="ViewBag.ReceivedByEmployeeId">
+                    <option value="">-- Choose employee --</option>
+                </select>
+                <span asp-validation-for="ReceivedByEmployeeId" class="text-danger"></span>
             </div>
-            <div class="page-actions mt-3"><button type="submit" class="btn btn-primary"><i class="bi bi-check-lg"></i> Create</button></div>
+
+            <div class="page-actions mt-3">
+                <button type="submit" class="btn btn-primary"><i class="bi bi-check-lg"></i> Create</button>
+            </div>
         </form>
     </div>
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+    <partial name="_PaymentContractScript" />
 }

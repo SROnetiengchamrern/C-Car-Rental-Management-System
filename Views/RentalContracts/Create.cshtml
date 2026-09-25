@@ -1,12 +1,18 @@
 @model CarRentalManagementSystem.Models.RentalContract
-
 @{
     ViewData["Title"] = "Create Contract";
 }
 
-<div class="page-header"><div><h1>Create Contract</h1><p class="page-subtitle">Start a new rental</p></div>
-    <div class="page-actions"><a class="btn btn-outline-secondary" asp-action="Index"><i class="bi bi-arrow-left"></i> Back to List</a></div>
+<div class="page-header">
+    <div>
+        <h1>Create Contract</h1>
+        <p class="page-subtitle">Start a new rental</p>
+    </div>
+    <div class="page-actions">
+        <a class="btn btn-outline-secondary" asp-action="Index"><i class="bi bi-arrow-left"></i> Back to List</a>
+    </div>
 </div>
+
 <div class="row">
     <div class="col-12">
         <form asp-action="Create">
@@ -14,6 +20,17 @@
             <div class="form-group">
                 <label asp-for="CustomerId" class="control-label"></label>
                 <select asp-for="CustomerId" class="form-control" asp-items="ViewBag.CustomerId"></select>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Car</label>
+                <select name="carId" class="form-control" asp-items="ViewBag.CarId">
+                    <option value="">-- Choose car --</option>
+                </select>
+                <span class="text-danger field-validation-valid" data-valmsg-for="CarId"></span>
+                @if (ViewData.ModelState["CarId"]?.Errors.Count > 0)
+                {
+                    <span class="text-danger">@ViewData.ModelState["CarId"]!.Errors[0].ErrorMessage</span>
+                }
             </div>
             <div class="form-group">
                 <label asp-for="EmployeeId" class="control-label"></label>
@@ -25,7 +42,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="ContractNumber" class="control-label"></label>
-                <input asp-for="ContractNumber" class="form-control" />
+                <input asp-for="ContractNumber" class="form-control" placeholder="RC-2025-0001" />
                 <span asp-validation-for="ContractNumber" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -40,33 +57,41 @@
             </div>
             <div class="form-group">
                 <label asp-for="Status" class="control-label"></label>
-                <input asp-for="Status" class="form-control" />
+                <select asp-for="Status" class="form-control">
+                    <option value="Active">Active</option>
+                    <option value="Completed">Completed</option>
+                    <option value="Cancelled">Cancelled</option>
+                </select>
                 <span asp-validation-for="Status" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="TotalAmount" class="control-label"></label>
                 <input asp-for="TotalAmount" class="form-control" />
+                <span class="form-text text-muted">Auto-calculated on save: rate × days − discount − deposit</span>
                 <span asp-validation-for="TotalAmount" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DiscountAmount" class="control-label"></label>
+                <input asp-for="DiscountAmount" class="form-control" />
+                <span asp-validation-for="DiscountAmount" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="DepositAmount" class="control-label"></label>
                 <input asp-for="DepositAmount" class="form-control" />
                 <span asp-validation-for="DepositAmount" class="text-danger"></span>
             </div>
-            <div class="form-group form-group-full"><label asp-for="Notes" class="control-label"></label>
+            <div class="form-group form-group-full">
+                <label asp-for="Notes" class="control-label"></label>
                 <input asp-for="Notes" class="form-control" />
                 <span asp-validation-for="Notes" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="CreatedAt" class="control-label"></label>
-                <input asp-for="CreatedAt" class="form-control" />
-                <span asp-validation-for="CreatedAt" class="text-danger"></span>
+            <div class="page-actions mt-3">
+                <button type="submit" class="btn btn-primary"><i class="bi bi-check-lg"></i> Create</button>
             </div>
-            <div class="page-actions mt-3"><button type="submit" class="btn btn-primary"><i class="bi bi-check-lg"></i> Create</button></div>
         </form>
     </div>
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
 }

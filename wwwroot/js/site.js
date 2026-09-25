@@ -23,6 +23,28 @@
 })();
 
 (function () {
+    function enhanceSelect(select) {
+        if (!select || select.closest(".select-wrap") || select.multiple) {
+            return;
+        }
+
+        const wrap = document.createElement("div");
+        wrap.className = "select-wrap";
+        select.parentNode.insertBefore(wrap, select);
+        wrap.appendChild(select);
+
+        const icon = document.createElement("i");
+        icon.className = "bi bi-chevron-down select-wrap-icon";
+        icon.setAttribute("aria-hidden", "true");
+        wrap.appendChild(icon);
+    }
+
+    document
+        .querySelectorAll("form select.form-control, form select.form-select, .auth-form select, .admin-content form select")
+        .forEach(enhanceSelect);
+})();
+
+(function () {
     if (typeof window.jQuery === "undefined" || typeof window.jQuery.fn.DataTable === "undefined") {
         return;
     }

@@ -30,6 +30,30 @@
             @Html.DisplayFor(model => model.SubTotal)
         </dd>
         <dt class = "col-sm-2">
+            Discount
+        </dt>
+        <dd class = "col-sm-10">
+            @((Model.RentalContract?.DiscountAmount ?? 0).ToString("C"))
+        </dd>
+        <dt class = "col-sm-2">
+            Deposit Amount
+        </dt>
+        <dd class = "col-sm-10">
+            @((Model.RentalContract?.DepositAmount ?? 0).ToString("C"))
+        </dd>
+        <dt class = "col-sm-2">
+            Total
+        </dt>
+        <dd class = "col-sm-10">
+            @{
+                var deleteTotal = Math.Max(0,
+                    Model.SubTotal
+                    - (Model.RentalContract?.DiscountAmount ?? 0)
+                    - (Model.RentalContract?.DepositAmount ?? 0));
+            }
+            @deleteTotal.ToString("C")
+        </dd>
+        <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Notes)
         </dt>
         <dd class = "col-sm-10">

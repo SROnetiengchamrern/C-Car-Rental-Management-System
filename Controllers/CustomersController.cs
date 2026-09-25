@@ -34,6 +34,11 @@ namespace CarRentalManagementSystem.Controllers
             }
 
             var customer = await _context.Customers
+                .Include(c => c.RentalContracts)
+                    .ThenInclude(rc => rc.RentalContractDetails)
+                        .ThenInclude(d => d.Car)
+                .Include(c => c.RentalContracts)
+                    .ThenInclude(rc => rc.Branch)
                 .FirstOrDefaultAsync(m => m.CustomerId == id);
             if (customer == null)
             {

@@ -1,81 +1,103 @@
 @model CarRentalManagementSystem.Models.RentalContract
-
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Contract Details";
 }
 
-<h1>Details</h1>
+<div class="page-header">
+    <div>
+        <h1>@Model.ContractNumber</h1>
+        <p class="page-subtitle">Rental contract details</p>
+    </div>
+    <div class="page-actions">
+        <a class="btn btn-outline-secondary" asp-action="Index"><i class="bi bi-arrow-left"></i> Back to List</a>
+    </div>
+</div>
 
-<div>
-    <h4>RentalContract</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ContractNumber)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ContractNumber)
+<div class="form-panel mb-4">
+    <dl class="row mb-0">
+        <dt class="col-sm-2">Customer</dt>
+        <dd class="col-sm-10">
+            @if (Model.Customer != null)
+            {
+                <a asp-controller="Customers" asp-action="Details" asp-route-id="@Model.CustomerId">@Model.Customer.FullName</a>
+            }
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.StartDate)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.StartDate)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.EndDate)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.EndDate)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Status)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Status)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.TotalAmount)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.TotalAmount)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.DepositAmount)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.DepositAmount)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Notes)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Notes)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.CreatedAt)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.CreatedAt)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Customer)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Customer.Email)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Employee)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Employee.Email)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Branch)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Branch.Address)
-        </dd>
+        <dt class="col-sm-2">Branch</dt>
+        <dd class="col-sm-10">@Model.Branch?.BranchName</dd>
+        <dt class="col-sm-2">Employee</dt>
+        <dd class="col-sm-10">@Model.Employee?.Email</dd>
+        <dt class="col-sm-2">Period</dt>
+        <dd class="col-sm-10">@Model.StartDate.ToString("dd MMM yyyy") – @Model.EndDate.ToString("dd MMM yyyy")</dd>
+        <dt class="col-sm-2">Status</dt>
+        <dd class="col-sm-10"><span class="status-badge status-@((Model.Status ?? "").Replace(" ", "").ToLowerInvariant())">@Model.Status</span></dd>
+        <dt class="col-sm-2">Total</dt>
+        <dd class="col-sm-10 money">@Model.TotalAmount.ToString("C")</dd>
+        <dt class="col-sm-2">Discount</dt>
+        <dd class="col-sm-10 money">@Model.DiscountAmount.ToString("C")</dd>
+        <dt class="col-sm-2">Deposit</dt>
+        <dd class="col-sm-10 money">@Model.DepositAmount.ToString("C")</dd>
+        <dt class="col-sm-2">Notes</dt>
+        <dd class="col-sm-10">@(Model.Notes ?? "—")</dd>
     </dl>
 </div>
-<div class="page-actions"><a class="btn btn-primary" asp-action="Edit" asp-route-id="@Model?.ContractId"><i class="bi bi-pencil-square"></i> Edit</a><a class="btn btn-outline-secondary" asp-action="Index"><i class="bi bi-arrow-left"></i> Back to List</a></div>
+
+<div class="page-header">
+    <div>
+        <h2 class="h4 mb-0">Rented cars</h2>
+        <p class="page-subtitle">Vehicles on this contract</p>
+    </div>
+</div>
+
+<div class="table-panel">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0 w-100">
+            <thead>
+                <tr>
+                    <th>Car</th>
+                    <th>Plate</th>
+                    <th>Daily Rate</th>
+                    <th>Days</th>
+                    <th>Subtotal</th>
+                </tr>
+            </thead>
+            <tbody>
+            @if (Model.RentalContractDetails?.Any() == true)
+            {
+                foreach (var detail in Model.RentalContractDetails)
+                {
+                    <tr>
+                        <td>
+                            @if (detail.Car != null)
+                            {
+                                <a asp-controller="Cars" asp-action="Details" asp-route-id="@detail.CarId">
+                                    <strong>@detail.Car.Make @detail.Car.Model</strong>
+                                </a>
+                            }
+                            else
+                            {
+                                <span class="text-muted">Unknown</span>
+                            }
+                        </td>
+                        <td>@detail.Car?.LicensePlate</td>
+                        <td class="money">@detail.DailyRate.ToString("C")</td>
+                        <td>@detail.Days</td>
+                        <td class="money">@detail.SubTotal.ToString("C")</td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="5" class="text-muted text-center py-4">No cars linked to this contract.</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="page-actions mt-3">
+    <a class="btn btn-primary" asp-action="Edit" asp-route-id="@Model.ContractId"><i class="bi bi-pencil-square"></i> Edit</a>
+    <a class="btn btn-outline-success" asp-controller="Invoices" asp-action="Details" asp-route-id="@Model.ContractId"><i class="bi bi-receipt"></i> Invoice</a>
+    <a class="btn btn-outline-secondary" asp-action="Index"><i class="bi bi-arrow-left"></i> Back to List</a>
+</div>

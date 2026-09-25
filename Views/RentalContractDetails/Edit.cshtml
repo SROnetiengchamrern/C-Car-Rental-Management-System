@@ -1,13 +1,21 @@
 @model CarRentalManagementSystem.Models.RentalContractDetail
-
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Edit Contract Detail";
 }
 
-<div class="page-header"><div><h1>Edit</h1><p class="page-subtitle">RentalContractDetail</p></div><div class="page-actions"><a class="btn btn-outline-secondary" asp-action="Index"><i class="bi bi-arrow-left"></i> Back to List</a></div></div>
+<div class="page-header">
+    <div>
+        <h1>Edit Contract Detail</h1>
+        <p class="page-subtitle">Update the car linked to this contract</p>
+    </div>
+    <div class="page-actions">
+        <a class="btn btn-outline-secondary" asp-action="Index"><i class="bi bi-arrow-left"></i> Back to List</a>
+    </div>
+</div>
+
 <div class="row">
     <div class="col-12">
-        <form asp-action="Edit">
+        <form asp-action="Edit" id="contractDetailForm">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="DetailId" />
             <div class="form-group">
@@ -22,24 +30,38 @@
             </div>
             <div class="form-group">
                 <label asp-for="DailyRate" class="control-label"></label>
-                <input asp-for="DailyRate" class="form-control" />
+                <input asp-for="DailyRate" class="form-control is-readonly" readonly tabindex="-1" />
                 <span asp-validation-for="DailyRate" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Days" class="control-label"></label>
-                <input asp-for="Days" class="form-control" />
+                <input asp-for="Days" class="form-control is-readonly" readonly tabindex="-1" />
                 <span asp-validation-for="Days" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="SubTotal" class="control-label"></label>
-                <input asp-for="SubTotal" class="form-control" />
+                <input asp-for="SubTotal" class="form-control is-readonly" readonly tabindex="-1" />
                 <span asp-validation-for="SubTotal" class="text-danger"></span>
             </div>
-            <div class="form-group form-group-full"><label asp-for="Notes" class="control-label"></label>
+            <div class="form-group">
+                <label class="control-label">Discount</label>
+                <input type="text" id="DiscountAmount" class="form-control is-readonly" readonly tabindex="-1" />
+            </div>
+            <div class="form-group">
+                <label class="control-label">Deposit Amount</label>
+                <input type="text" id="DepositAmount" class="form-control is-readonly" readonly tabindex="-1" />
+            </div>
+            <div class="form-group">
+                <label class="control-label">Total</label>
+                <input type="text" id="TotalAmount" class="form-control is-readonly" readonly tabindex="-1" />
+                <span class="form-text text-muted">Total = Sub Total − Discount − Deposit</span>
+            </div>
+            <div class="form-group form-group-full">
+                <label asp-for="Notes" class="control-label"></label>
                 <input asp-for="Notes" class="form-control" />
                 <span asp-validation-for="Notes" class="text-danger"></span>
             </div>
-            <div class="form-group">
+            <div class="page-actions mt-3">
                 <button type="submit" class="btn btn-primary"><i class="bi bi-check-lg"></i> Save</button>
             </div>
         </form>
@@ -47,5 +69,42 @@
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+    <script>
+        (function () {
+            const carRates = @Html.Raw(ViewData["CarRatesJson"] ?? "{}");
+            const contractDays = @Html.Raw(ViewData["ContractDaysJson"] ?? "{}");
+            const contractDiscounts = @Html.Raw(ViewData["ContractDiscountsJson"] ?? "{}");
+            const contractTotals = @Html.Raw(ViewData["ContractTotalsJson"] ?? "{}");
+            const contractDeposits = @Html.Raw(ViewData["ContractDepositsJson"] ?? "{}");
+            const carSelect = document.getElementById("CarId");
+            const contractSelect = document.getElementById("ContractId");
+            const dailyRate = document.getElementById("DailyRate");
+            const days = document.getElementById("Days");
+            const subTotal = document.getElementById("SubTotal");
+            const discount = document.getElementById("DiscountAmount");
+            const deposit = document.getElementById("DepositAmount");
+            const total = document.getElementById("TotalAmount");
+
+            function recalc() {
+                const rate = Number(carRates[carSelect?.value] || 0);
+                const dayCount = Number(contractDays[contractSelect?.value] || 0);
+                const discountAmount = Number(contractDiscounts[contractSelect?.value] || 0);
+                const depositAmount = Number(contractDeposits[contractSelect?.value] || 0);
+                const lineSubTotal = rate && dayCount ? rate * dayCount : 0;
+                // Total = Sub Total − Discount − Deposit
+                const totalAmount = Math.max(0, lineSubTotal - discountAmount - depositAmount);
+                if (dailyRate) dailyRate.value = rate ? rate.toFixed(2) : "";
+                if (days) days.value = dayCount || "";
+                if (subTotal) subTotal.value = lineSubTotal ? lineSubTotal.toFixed(2) : "";
+                if (discount) discount.value = contractSelect?.value ? discountAmount.toFixed(2) : "";
+                if (deposit) deposit.value = contractSelect?.value ? depositAmount.toFixed(2) : "";
+                if (total) total.value = contractSelect?.value ? totalAmount.toFixed(2) : "";
+            }
+
+            carSelect?.addEventListener("change", recalc);
+            contractSelect?.addEventListener("change", recalc);
+            recalc();
+        })();
+    </script>
 }
