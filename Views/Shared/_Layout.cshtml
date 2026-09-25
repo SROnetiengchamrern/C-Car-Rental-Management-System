@@ -1,0 +1,87 @@
+﻿@{
+    var currentController = ViewContext.RouteData.Values["controller"]?.ToString() ?? "";
+    string IsActive(string controller) =>
+        string.Equals(currentController, controller, StringComparison.OrdinalIgnoreCase) ? "active" : "";
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Car Rental Management</title>
+    <script type="importmap"></script>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/CarRentalManagementSystem.styles.css" asp-append-version="true" />
+</head>
+<body class="admin-body">
+    <div class="admin-shell">
+        <aside class="admin-sidebar" id="adminSidebar">
+            <div class="sidebar-brand">
+                <a asp-controller="Home" asp-action="Index">CarRental Admin</a>
+                <button type="button" class="sidebar-close d-lg-none" id="sidebarClose" aria-label="Close menu">&times;</button>
+            </div>
+
+            <nav class="sidebar-nav">
+                <div class="nav-section">
+                    <div class="nav-section-title">Overview</div>
+                    <a class="nav-link @IsActive("Home")" asp-controller="Home" asp-action="Index">Dashboard</a>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-section-title">Fleet</div>
+                    <a class="nav-link @IsActive("Cars")" asp-controller="Cars" asp-action="Index">Cars</a>
+                    <a class="nav-link @IsActive("CarCategories")" asp-controller="CarCategories" asp-action="Index">Car Categories</a>
+                    <a class="nav-link @IsActive("CarMaintenances")" asp-controller="CarMaintenances" asp-action="Index">Car Maintenance</a>
+                    <a class="nav-link @IsActive("CarStatusHistories")" asp-controller="CarStatusHistories" asp-action="Index">Car Status History</a>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-section-title">People</div>
+                    <a class="nav-link @IsActive("Customers")" asp-controller="Customers" asp-action="Index">Customers</a>
+                    <a class="nav-link @IsActive("Employees")" asp-controller="Employees" asp-action="Index">Employees</a>
+                    <a class="nav-link @IsActive("Branches")" asp-controller="Branches" asp-action="Index">Branches</a>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-section-title">Rentals</div>
+                    <a class="nav-link @IsActive("RentalContracts")" asp-controller="RentalContracts" asp-action="Index">Rental Contracts</a>
+                    <a class="nav-link @IsActive("RentalContractDetails")" asp-controller="RentalContractDetails" asp-action="Index">Contract Details</a>
+                    <a class="nav-link @IsActive("Payments")" asp-controller="Payments" asp-action="Index">Payments</a>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-section-title">Returns</div>
+                    <a class="nav-link @IsActive("CarReturns")" asp-controller="CarReturns" asp-action="Index">Car Returns</a>
+                    <a class="nav-link @IsActive("ReturnInspections")" asp-controller="ReturnInspections" asp-action="Index">Return Inspections</a>
+                </div>
+            </nav>
+        </aside>
+
+        <div class="sidebar-backdrop d-lg-none" id="sidebarBackdrop"></div>
+
+        <div class="admin-main">
+            <header class="admin-topbar">
+                <button type="button" class="btn btn-sm btn-outline-light d-lg-none" id="sidebarToggle" aria-label="Open menu">
+                    Menu
+                </button>
+                <div class="topbar-title">@ViewData["Title"]</div>
+                <div class="topbar-meta text-white-50 small d-none d-md-block">Car Rental Management System</div>
+            </header>
+
+            <main class="admin-content" role="main">
+                @RenderBody()
+            </main>
+
+            <footer class="admin-footer">
+                &copy; 2026 Car Rental Management System
+            </footer>
+        </div>
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

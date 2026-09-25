@@ -1,0 +1,95 @@
+﻿@model CarRentalManagementSystem.ViewModels.DashboardViewModel
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<div class="dashboard-hero mb-4">
+    <h1 class="display-5 fw-bold mb-1">Car Rental Management</h1>
+    <p class="lead mb-0 opacity-90">Manage fleet, customers, contracts, payments, and returns in one place.</p>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-md-3 col-sm-6">
+        <div class="stat-card">
+            <div class="stat-label">Total Cars</div>
+            <div class="stat-value">@Model.TotalCars</div>
+            <a asp-controller="Cars" asp-action="Index" class="stat-link">View fleet</a>
+        </div>
+    </div>
+    <div class="col-md-3 col-sm-6">
+        <div class="stat-card success">
+            <div class="stat-label">Available</div>
+            <div class="stat-value">@Model.AvailableCars</div>
+            <span class="stat-hint">Ready to rent</span>
+        </div>
+    </div>
+    <div class="col-md-3 col-sm-6">
+        <div class="stat-card warning">
+            <div class="stat-label">Currently Rented</div>
+            <div class="stat-value">@Model.RentedCars</div>
+            <span class="stat-hint">On the road</span>
+        </div>
+    </div>
+    <div class="col-md-3 col-sm-6">
+        <div class="stat-card info">
+            <div class="stat-label">Active Contracts</div>
+            <div class="stat-value">@Model.ActiveContracts</div>
+            <a asp-controller="RentalContracts" asp-action="Index" class="stat-link">Manage contracts</a>
+        </div>
+    </div>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-md-3 col-sm-6">
+        <div class="stat-card">
+            <div class="stat-label">Customers</div>
+            <div class="stat-value">@Model.TotalCustomers</div>
+            <a asp-controller="Customers" asp-action="Index" class="stat-link">View customers</a>
+        </div>
+    </div>
+    <div class="col-md-3 col-sm-6">
+        <div class="stat-card">
+            <div class="stat-label">Branches</div>
+            <div class="stat-value">@Model.TotalBranches</div>
+            <a asp-controller="Branches" asp-action="Index" class="stat-link">View branches</a>
+        </div>
+    </div>
+    <div class="col-md-3 col-sm-6">
+        <div class="stat-card">
+            <div class="stat-label">Employees</div>
+            <div class="stat-value">@Model.TotalEmployees</div>
+            <a asp-controller="Employees" asp-action="Index" class="stat-link">View staff</a>
+        </div>
+    </div>
+    <div class="col-md-3 col-sm-6">
+        <div class="stat-card danger">
+            <div class="stat-label">Pending Maintenance</div>
+            <div class="stat-value">@Model.PendingMaintenance</div>
+            <a asp-controller="CarMaintenances" asp-action="Index" class="stat-link">Open queue</a>
+        </div>
+    </div>
+</div>
+
+<div class="row g-3">
+    <div class="col-md-4">
+        <div class="quick-panel">
+            <h5>Revenue</h5>
+            <p class="display-6 fw-semibold text-success mb-1">@Model.TotalPayments.ToString("C")</p>
+            <p class="text-muted mb-0">Completed payments</p>
+            <a asp-controller="Payments" asp-action="Index" class="btn btn-sm btn-outline-success mt-3">Payments</a>
+        </div>
+    </div>
+    <div class="col-md-8">
+        <div class="quick-panel">
+            <h5 class="mb-3">Quick actions</h5>
+            <div class="d-flex flex-wrap gap-2">
+                <a class="btn btn-primary" asp-controller="RentalContracts" asp-action="Create">New contract</a>
+                <a class="btn btn-outline-primary" asp-controller="Cars" asp-action="Create">Add car</a>
+                <a class="btn btn-outline-primary" asp-controller="Customers" asp-action="Create">Add customer</a>
+                <a class="btn btn-outline-primary" asp-controller="CarReturns" asp-action="Create">Process return</a>
+                <a class="btn btn-outline-secondary" asp-controller="CarStatusHistories" asp-action="Index">Status history</a>
+                <a class="btn btn-outline-secondary" asp-controller="ReturnInspections" asp-action="Index">Inspections</a>
+            </div>
+        </div>
+    </div>
+</div>

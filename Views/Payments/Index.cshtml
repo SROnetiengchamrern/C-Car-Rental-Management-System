@@ -1,0 +1,73 @@
+@model IEnumerable<CarRentalManagementSystem.Models.Payment>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p class="page-actions"><a class="btn btn-primary" asp-action="Create">Create New</a></p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Amount)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PaymentDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PaymentMethod)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TransactionReference)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Status)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Notes)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.RentalContract)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ReceivedByEmployee)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Amount)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PaymentDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PaymentMethod)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TransactionReference)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Status)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Notes)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.RentalContract.ContractNumber)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ReceivedByEmployee.Email)
+            </td>
+            <td>
+                <div class="table-actions"><a class="btn btn-sm btn-outline-primary" asp-action="Edit" asp-route-id="@item.PaymentId">Edit</a><a class="btn btn-sm btn-outline-secondary" asp-action="Details" asp-route-id="@item.PaymentId">Details</a><a class="btn btn-sm btn-outline-danger" asp-action="Delete" asp-route-id="@item.PaymentId">Delete</a></div>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
