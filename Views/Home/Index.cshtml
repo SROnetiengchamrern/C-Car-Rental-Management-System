@@ -3,42 +3,58 @@
     ViewData["Title"] = "Dashboard";
 }
 
-<div class="dashboard-hero mb-4">
-    <h1 class="display-5 fw-bold mb-1">Car Rental Management</h1>
-    <p class="lead mb-0 opacity-90">Manage fleet, customers, contracts, payments, and returns in one place.</p>
+<div class="page-header">
+    <div>
+        <h1>Dashboard</h1>
+        <p class="page-subtitle">Fleet, bookings, contracts, and payments overview</p>
+    </div>
+    <div class="page-actions">
+        <a class="btn btn-outline-primary" asp-controller="BookingRequests" asp-action="Index">
+            <i class="bi bi-inbox"></i> Booking Requests
+            @if (Model.NewBookingRequests > 0)
+            {
+                <span class="badge text-bg-danger ms-1">@Model.NewBookingRequests</span>
+            }
+        </a>
+        <a class="btn btn-primary" asp-controller="RentalContracts" asp-action="Create">
+            <i class="bi bi-plus-lg"></i> New contract
+        </a>
+    </div>
 </div>
 
-<div class="row g-3 mb-4">
+@* Row 1 — key metrics *@
+<div class="row g-3 mb-3">
     <div class="col-md-3 col-sm-6">
-        <div class="stat-card">
-            <div class="stat-label">Total Cars</div>
-            <div class="stat-value">@Model.TotalCars</div>
-            <a asp-controller="Cars" asp-action="Index" class="stat-link">View fleet</a>
+        <div class="stat-card @(Model.NewBookingRequests > 0 ? "danger" : "info")">
+            <div class="stat-label">New Booking Requests</div>
+            <div class="stat-value">@Model.NewBookingRequests</div>
+            <a asp-controller="BookingRequests" asp-action="Index" class="stat-link">Review inbox</a>
         </div>
     </div>
     <div class="col-md-3 col-sm-6">
         <div class="stat-card success">
-            <div class="stat-label">Available</div>
+            <div class="stat-label">Available Cars</div>
             <div class="stat-value">@Model.AvailableCars</div>
-            <span class="stat-hint">Ready to rent</span>
+            <span class="stat-hint">of @Model.TotalCars total</span>
         </div>
     </div>
     <div class="col-md-3 col-sm-6">
         <div class="stat-card warning">
             <div class="stat-label">Currently Rented</div>
             <div class="stat-value">@Model.RentedCars</div>
-            <span class="stat-hint">On the road</span>
+            <a asp-controller="RentalContracts" asp-action="Index" class="stat-link">@Model.ActiveContracts active contracts</a>
         </div>
     </div>
     <div class="col-md-3 col-sm-6">
-        <div class="stat-card info">
-            <div class="stat-label">Active Contracts</div>
-            <div class="stat-value">@Model.ActiveContracts</div>
-            <a asp-controller="RentalContracts" asp-action="Index" class="stat-link">Manage contracts</a>
+        <div class="stat-card">
+            <div class="stat-label">Revenue</div>
+            <div class="stat-value money">@Model.TotalPayments.ToString("C")</div>
+            <a asp-controller="Payments" asp-action="Index" class="stat-link">Completed payments</a>
         </div>
     </div>
 </div>
 
+@* Row 2 — people / ops *@
 <div class="row g-3 mb-4">
     <div class="col-md-3 col-sm-6">
         <div class="stat-card">
@@ -62,7 +78,7 @@
         </div>
     </div>
     <div class="col-md-3 col-sm-6">
-        <div class="stat-card danger">
+        <div class="stat-card @(Model.PendingMaintenance > 0 ? "danger" : "")">
             <div class="stat-label">Pending Maintenance</div>
             <div class="stat-value">@Model.PendingMaintenance</div>
             <a asp-controller="CarMaintenances" asp-action="Index" class="stat-link">Open queue</a>
@@ -70,26 +86,171 @@
     </div>
 </div>
 
+@* Row 3 — bookings + side panels *@
 <div class="row g-3">
-    <div class="col-md-4">
-        <div class="quick-panel">
-            <h5>Revenue</h5>
-            <p class="display-6 fw-semibold text-success mb-1">@Model.TotalPayments.ToString("C")</p>
-            <p class="text-muted mb-0">Completed payments</p>
-            <a asp-controller="Payments" asp-action="Index" class="btn btn-sm btn-outline-secondary mt-3"><i class="bi bi-credit-card"></i> Payments</a>
+    <div class="col-12">
+        <div class="table-panel mb-0">
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 px-3 pt-3">
+                <div>
+                    <h2 class="h5 mb-0">Recent booking requests</h2>
+                    <p class="text-muted small mb-0">Latest @Model.RecentBookings.Count of @Model.TotalBookingRequests total</p>
+                </div>
+                <a class="btn btn-sm btn-outline-primary" asp-controller="BookingRequests" asp-action="Index">
+                    <i class="bi bi-inbox"></i> View all
+                </a>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead>
+                        <tr>
+                            <th>Created</th>
+                            <th>Customer</th>
+                            <th>Car</th>
+                            <th>Dates</th>
+                            <th>Status</th>
+                            <th class="text-end">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    @if (Model.RecentBookings.Count == 0)
+                    {
+                        <tr>
+                            <td colspan="6" class="empty-state">No booking requests yet.</td>
+                        </tr>
+                    }
+                    else
+                    {
+                        foreach (var item in Model.RecentBookings)
+                        {
+                            var statusClass = "status-" + (item.Status ?? "").Replace(" ", "").ToLowerInvariant();
+                            <tr>
+                                <td>
+                                    <strong>@item.Reference</strong>
+                                    <div class="text-muted small">@item.CreatedAt.ToString("dd MMM yyyy HH:mm")</div>
+                                </td>
+                                <td>@item.FullName</td>
+                                <td>@item.CarName</td>
+                                <td>@item.StartDate.ToString("dd MMM") – @item.EndDate.ToString("dd MMM yyyy")</td>
+                                <td><span class="status-badge @statusClass">@item.Status</span></td>
+                                <td>
+                                    <div class="table-actions">
+                                        <a class="btn btn-sm btn-outline-secondary"
+                                           asp-controller="BookingRequests"
+                                           asp-action="Details"
+                                           asp-route-id="@item.BookingRequestId">
+                                            <i class="bi bi-eye"></i> Details
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
-    <div class="col-md-8">
+
+    <div class="col-lg-4 col-md-6">
         <div class="quick-panel">
-            <h5 class="mb-3">Quick actions</h5>
-            <div class="d-flex flex-wrap gap-2">
-                <a class="btn btn-primary" asp-controller="RentalContracts" asp-action="Create"><i class="bi bi-plus-lg"></i> New contract</a>
-                <a class="btn btn-outline-primary" asp-controller="Cars" asp-action="Create"><i class="bi bi-car-front"></i> Add car</a>
-                <a class="btn btn-outline-primary" asp-controller="Customers" asp-action="Create"><i class="bi bi-person-plus"></i> Add customer</a>
-                <a class="btn btn-outline-primary" asp-controller="CarReturns" asp-action="Create"><i class="bi bi-arrow-return-left"></i> Process return</a>
-                <a class="btn btn-outline-secondary" asp-controller="CarStatusHistories" asp-action="Index"><i class="bi bi-clock-history"></i> Status history</a>
-                <a class="btn btn-outline-secondary" asp-controller="ReturnInspections" asp-action="Index"><i class="bi bi-clipboard-check"></i> Inspections</a>
+            <h5 class="quick-panel-title">Quick actions</h5>
+            <div class="dashboard-actions">
+                <a class="btn btn-primary" asp-controller="BookingRequests" asp-action="Index">
+                    <i class="bi bi-inbox"></i>
+                    <span>Booking requests</span>
+                    @if (Model.NewBookingRequests > 0)
+                    {
+                        <span class="dashboard-action-badge">@Model.NewBookingRequests new</span>
+                    }
+                </a>
+                <a class="btn btn-outline-primary" asp-controller="RentalContracts" asp-action="Create">
+                    <i class="bi bi-plus-lg"></i><span>New contract</span>
+                </a>
+                <a class="btn btn-outline-primary" asp-controller="Cars" asp-action="Create">
+                    <i class="bi bi-car-front"></i><span>Add car</span>
+                </a>
+                <a class="btn btn-outline-primary" asp-controller="Customers" asp-action="Create">
+                    <i class="bi bi-person-plus"></i><span>Add customer</span>
+                </a>
+                <a class="btn btn-outline-primary" asp-controller="CarReturns" asp-action="Create">
+                    <i class="bi bi-arrow-return-left"></i><span>Process return</span>
+                </a>
+                <a class="btn btn-outline-primary" asp-controller="Invoices" asp-action="Index">
+                    <i class="bi bi-receipt"></i><span>Invoices</span>
+                </a>
+                <a class="btn btn-outline-primary" asp-controller="CarMaintenances" asp-action="Index">
+                    <i class="bi bi-tools"></i><span>Maintenance</span>
+                </a>
             </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4 col-md-6">
+        <div class="quick-panel">
+            <h5 class="quick-panel-title">Fleet snapshot</h5>
+            @{
+                var totalFleet = Math.Max(Model.TotalCars, 1);
+                var availablePct = (int)Math.Round(100.0 * Model.AvailableCars / totalFleet);
+                var rentedPct = (int)Math.Round(100.0 * Model.RentedCars / totalFleet);
+                var maintenancePct = Math.Max(0, 100 - availablePct - rentedPct);
+            }
+            <div class="fleet-bar" aria-hidden="true">
+                <span class="fleet-bar-available" style="width:@availablePct%"></span>
+                <span class="fleet-bar-rented" style="width:@rentedPct%"></span>
+                <span class="fleet-bar-maintenance" style="width:@maintenancePct%"></span>
+            </div>
+            <ul class="list-unstyled dashboard-side-list mb-0">
+                <li>
+                    <span><i class="bi bi-check-circle-fill text-success"></i> Available</span>
+                    <strong>@Model.AvailableCars</strong>
+                </li>
+                <li>
+                    <span><i class="bi bi-circle-fill text-warning"></i> Rented</span>
+                    <strong>@Model.RentedCars</strong>
+                </li>
+                <li>
+                    <span><i class="bi bi-exclamation-triangle-fill text-danger"></i> Maintenance / OOS</span>
+                    <strong>@Model.CarsInMaintenance</strong>
+                </li>
+                <li>
+                    <span><i class="bi bi-car-front-fill"></i> Total fleet</span>
+                    <strong>@Model.TotalCars</strong>
+                </li>
+            </ul>
+            <a asp-controller="Cars" asp-action="Index" class="btn btn-outline-primary btn-sm dashboard-panel-link">
+                <i class="bi bi-car-front"></i><span>View fleet</span>
+            </a>
+        </div>
+    </div>
+
+    <div class="col-lg-4 col-md-12">
+        <div class="quick-panel">
+            <div class="quick-panel-head">
+                <h5 class="quick-panel-title mb-0">Returns due (7 days)</h5>
+                <span class="dashboard-count-badge">@Model.UpcomingReturns.Count</span>
+            </div>
+            @if (Model.UpcomingReturns.Count == 0)
+            {
+                <p class="text-muted small mb-0">No active contracts due this week.</p>
+            }
+            else
+            {
+                <ul class="list-unstyled dashboard-side-list mb-0">
+                    @foreach (var item in Model.UpcomingReturns)
+                    {
+                        <li>
+                            <span>
+                                <strong>@item.ContractNumber</strong>
+                                <div class="text-muted small">@item.CustomerName</div>
+                            </span>
+                            <strong class="text-nowrap">@item.EndDate.ToString("dd MMM")</strong>
+                        </li>
+                    }
+                </ul>
+                <a asp-controller="CarReturns" asp-action="Index" class="btn btn-outline-primary btn-sm dashboard-panel-link">
+                    <i class="bi bi-arrow-return-left"></i><span>Car returns</span>
+                </a>
+            }
         </div>
     </div>
 </div>

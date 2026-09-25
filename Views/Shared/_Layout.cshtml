@@ -121,6 +121,46 @@
 
     <div id="bookingAlertHost" class="booking-alert-host" aria-live="polite" aria-atomic="true"></div>
 
+    <button type="button" id="calcFab" class="calc-fab" title="Calculator" aria-label="Open calculator">
+        <i class="bi bi-calculator"></i>
+    </button>
+
+    <div id="calcPopup" class="calc-popup" hidden>
+        <div class="calc-popup-header">
+            <span><i class="bi bi-calculator"></i> Calculator</span>
+            <button type="button" id="calcClose" class="calc-popup-close" aria-label="Close calculator">&times;</button>
+        </div>
+        <div class="calc-display-wrap">
+            <div id="calcExpression" class="calc-expression"></div>
+            <div id="calcDisplay" class="calc-display">0</div>
+        </div>
+        <div class="calc-keys" id="calcKeys">
+            <button type="button" data-action="clear" class="calc-key calc-key-muted">C</button>
+            <button type="button" data-action="back" class="calc-key calc-key-muted">⌫</button>
+            <button type="button" data-op="%" class="calc-key calc-key-op">%</button>
+            <button type="button" data-op="/" class="calc-key calc-key-op">÷</button>
+
+            <button type="button" data-num="7" class="calc-key">7</button>
+            <button type="button" data-num="8" class="calc-key">8</button>
+            <button type="button" data-num="9" class="calc-key">9</button>
+            <button type="button" data-op="*" class="calc-key calc-key-op">×</button>
+
+            <button type="button" data-num="4" class="calc-key">4</button>
+            <button type="button" data-num="5" class="calc-key">5</button>
+            <button type="button" data-num="6" class="calc-key">6</button>
+            <button type="button" data-op="-" class="calc-key calc-key-op">−</button>
+
+            <button type="button" data-num="1" class="calc-key">1</button>
+            <button type="button" data-num="2" class="calc-key">2</button>
+            <button type="button" data-num="3" class="calc-key">3</button>
+            <button type="button" data-op="+" class="calc-key calc-key-op">+</button>
+
+            <button type="button" data-num="0" class="calc-key calc-key-zero">0</button>
+            <button type="button" data-num="." class="calc-key">.</button>
+            <button type="button" data-action="equals" class="calc-key calc-key-eq">=</button>
+        </div>
+    </div>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>

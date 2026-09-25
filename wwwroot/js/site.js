@@ -221,3 +221,179 @@
     poll();
     window.setInterval(poll, POLL_MS);
 })();
+
+(function () {
+    var OPEN_KEY = "adminCalcOpen";
+    var STATE_KEY = "adminCalcState";
+    var fab = document.getElementById("calcFab");
+    var popup = document.getElementById("calcPopup");
+    var closeBtn = document.getElementById("calcClose");
+    var displayEl = document.getElementById("calcDisplay");
+    var expressionEl = document.getElementById("calcExpression");
+    var keys = document.getElementById("calcKeys");
+
+    if (!fab || !popup || !displayEl || !keys) {
+        return;
+    }
+
+    var state = {
+        display: "0",
+        expression: "",
+        previous: null,
+        operator: null,
+        waitingForOperand: false
+    };
+
+    function loadState() {
+        try {
+            var raw = localStorage.getItem(STATE_KEY);
+            if (!raw) return;
+            var saved = JSON.parse(raw);
+            if (saved && typeof saved === "object") {
+                state.display = saved.display || "0";
+                state.expression = saved.expression || "";
+                state.previous = typeof saved.previous === "number" ? saved.previous : null;
+                state.operator = saved.operator || null;
+                state.waitingForOperand = !!saved.waitingForOperand;
+            }
+        } catch (e) {
+            /* ignore */
+        }
+    }
+
+    function saveState() {
+        localStorage.setItem(STATE_KEY, JSON.stringify(state));
+    }
+
+    function isOpen() {
+        return localStorage.getItem(OPEN_KEY) === "1";
+    }
+
+    function setOpen(open) {
+        localStorage.setItem(OPEN_KEY, open ? "1" : "0");
+        popup.hidden = !open;
+        fab.classList.toggle("is-hidden", open);
+        popup.classList.toggle("is-open", open);
+    }
+
+    function render() {
+        displayEl.textContent = state.display;
+        expressionEl.textContent = state.expression;
+    }
+
+    function inputDigit(digit) {
+        if (state.waitingForOperand) {
+            state.display = digit === "." ? "0." : digit;
+            state.waitingForOperand = false;
+        } else if (digit === ".") {
+            if (state.display.indexOf(".") === -1) {
+                state.display += ".";
+            }
+        } else if (state.display === "0") {
+            state.display = digit;
+        } else {
+            if (state.display.replace(".", "").length >= 12) return;
+            state.display += digit;
+        }
+        saveState();
+        render();
+    }
+
+    function formatNumber(value) {
+        if (!isFinite(value)) return "Error";
+        var text = String(Number(value.toPrecision(12)));
+        if (text.length > 14) {
+            text = Number(value).toExponential(6);
+        }
+        return text;
+    }
+
+    function compute(a, op, b) {
+        switch (op) {
+            case "+": return a + b;
+            case "-": return a - b;
+            case "*": return a * b;
+            case "/": return b === 0 ? NaN : a / b;
+            case "%": return a % b;
+            default: return b;
+        }
+    }
+
+    function opSymbol(op) {
+        return ({ "+": "+", "-": "−", "*": "×", "/": "÷", "%": "%" })[op] || op;
+    }
+
+    function setOperator(nextOp) {
+        var input = parseFloat(state.display);
+        if (state.operator && !state.waitingForOperand && state.previous !== null) {
+            var result = compute(state.previous, state.operator, input);
+            state.display = formatNumber(result);
+            state.previous = isFinite(result) ? result : null;
+        } else {
+            state.previous = input;
+        }
+        state.operator = nextOp;
+        state.waitingForOperand = true;
+        state.expression = formatNumber(state.previous) + " " + opSymbol(nextOp);
+        saveState();
+        render();
+    }
+
+    function equals() {
+        if (state.operator === null || state.previous === null) return;
+        var input = parseFloat(state.display);
+        var result = compute(state.previous, state.operator, input);
+        state.expression =
+            formatNumber(state.previous) + " " + opSymbol(state.operator) + " " + formatNumber(input) + " =";
+        state.display = formatNumber(result);
+        state.previous = null;
+        state.operator = null;
+        state.waitingForOperand = true;
+        saveState();
+        render();
+    }
+
+    function clearAll() {
+        state.display = "0";
+        state.expression = "";
+        state.previous = null;
+        state.operator = null;
+        state.waitingForOperand = false;
+        saveState();
+        render();
+    }
+
+    function backspace() {
+        if (state.waitingForOperand) return;
+        if (state.display.length <= 1 || (state.display.length === 2 && state.display.startsWith("-"))) {
+            state.display = "0";
+        } else {
+            state.display = state.display.slice(0, -1);
+        }
+        saveState();
+        render();
+    }
+
+    keys.addEventListener("click", function (e) {
+        var btn = e.target.closest("button");
+        if (!btn) return;
+        if (btn.dataset.num !== undefined) inputDigit(btn.dataset.num);
+        else if (btn.dataset.op) setOperator(btn.dataset.op);
+        else if (btn.dataset.action === "equals") equals();
+        else if (btn.dataset.action === "clear") clearAll();
+        else if (btn.dataset.action === "back") backspace();
+    });
+
+    fab.addEventListener("click", function () {
+        setOpen(true);
+    });
+
+    closeBtn.addEventListener("click", function () {
+        setOpen(false);
+    });
+
+    loadState();
+    render();
+    // Persist across page navigation: reopen if user had it open
+    setOpen(isOpen());
+})();

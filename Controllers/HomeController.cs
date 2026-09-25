@@ -18,6 +18,44 @@ public class HomeController : Controller
 
     public async Task<IActionResult> Index()
     {
+        var recentBookings = await _context.BookingRequests
+            .AsNoTracking()
+            .Include(b => b.Car)
+            .OrderByDescending(b => b.CreatedAt)
+            .Take(8)
+            .Select(b => new DashboardBookingItem
+            {
+                BookingRequestId = b.BookingRequestId,
+                Reference = b.Reference,
+                FullName = b.FullName,
+                CarName = b.Car != null ? b.Car.Make + " " + b.Car.Model : ("#" + b.CarId),
+                StartDate = b.StartDate,
+                EndDate = b.EndDate,
+                Status = b.Status,
+                CreatedAt = b.CreatedAt
+            })
+            .ToListAsync();
+
+        var today = DateTime.Today;
+        var dueUntil = today.AddDays(7);
+
+        var upcomingReturns = await _context.RentalContracts
+            .AsNoTracking()
+            .Include(c => c.Customer)
+            .Where(c => c.Status == "Active" && c.EndDate.Date >= today && c.EndDate.Date <= dueUntil)
+            .OrderBy(c => c.EndDate)
+            .Take(5)
+            .Select(c => new DashboardReturnDueItem
+            {
+                ContractId = c.ContractId,
+                ContractNumber = c.ContractNumber,
+                CustomerName = c.Customer != null
+                    ? c.Customer.FirstName + " " + c.Customer.LastName
+                    : "—",
+                EndDate = c.EndDate
+            })
+            .ToListAsync();
+
         var model = new DashboardViewModel
         {
             TotalCars = await _context.Cars.CountAsync(),
@@ -28,9 +66,15 @@ public class HomeController : Controller
             TotalBranches = await _context.Branches.CountAsync(b => b.IsActive),
             TotalEmployees = await _context.Employees.CountAsync(e => e.IsActive),
             PendingMaintenance = await _context.CarMaintenances.CountAsync(m => m.Status == "Scheduled" || m.Status == "InProgress"),
+            CarsInMaintenance = await _context.Cars.CountAsync(c => c.Status == "Maintenance" || c.Status == "OutOfService"),
+            NewBookingRequests = await _context.BookingRequests.CountAsync(b => b.Status == "New"),
+            TotalBookingRequests = await _context.BookingRequests.CountAsync(),
+            ReturnsDueSoon = upcomingReturns.Count,
             TotalPayments = await _context.Payments
                 .Where(p => p.Status == "Completed")
-                .SumAsync(p => (decimal?)p.Amount) ?? 0m
+                .SumAsync(p => (decimal?)p.Amount) ?? 0m,
+            RecentBookings = recentBookings,
+            UpcomingReturns = upcomingReturns
         };
 
         return View(model);
